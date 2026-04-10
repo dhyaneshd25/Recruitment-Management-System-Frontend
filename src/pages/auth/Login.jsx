@@ -40,7 +40,7 @@ const Login = () => {
   }
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: 'var(--bg-primary)', padding: '16px' }}>
+    <div style={{ position: 'relative', minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: 'var(--bg-primary)', padding: '16px' }}>
       <ThreeBackground />
 
       {/* Glow overlay */}

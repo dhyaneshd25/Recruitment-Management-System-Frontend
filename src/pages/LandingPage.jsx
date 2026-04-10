@@ -226,7 +226,7 @@ const LandingPage = () => {
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 28 }}>
           {TAGS.map(t => (
             <button key={t} onClick={() => setTag(t)} style={{
-              padding: '6px 16px', borderRadius: 20, border: 'none', cursor: 'pointer',
+              padding: '6px 16px', borderRadius: 20, cursor: 'pointer',
               fontSize: 12, fontFamily: 'var(--font-body)', fontWeight: 600,
               background: tag === t ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : 'var(--bg-card)',
               color: tag === t ? 'white' : 'var(--text-secondary)',

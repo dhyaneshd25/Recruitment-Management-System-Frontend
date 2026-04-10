@@ -157,7 +157,7 @@ const BrowseJobs = () => {
       {/* Tags */}
       <div style={{ display:'flex', gap:7, flexWrap:'wrap', marginBottom:20 }}>
         {TAGS.map(t=>(
-          <button key={t} onClick={()=>setTag(t)} style={{ padding:'5px 14px', borderRadius:20, border:'none', cursor:'pointer', fontSize:11, fontFamily:'var(--font-body)', fontWeight:600, background:tag===t?'linear-gradient(135deg,#6366f1,#8b5cf6)':'var(--bg-hover)', color:tag===t?'white':'var(--text-secondary)', border:tag===t?'none':'1px solid var(--border-subtle)', boxShadow:tag===t?'0 4px 12px rgba(99,102,241,0.3)':'none', transition:'all 0.15s' }}>
+          <button key={t} onClick={()=>setTag(t)} style={{ padding:'5px 14px', borderRadius:20, cursor:'pointer', fontSize:11, fontFamily:'var(--font-body)', fontWeight:600, background:tag===t?'linear-gradient(135deg,#6366f1,#8b5cf6)':'var(--bg-hover)', color:tag===t?'white':'var(--text-secondary)', border:tag===t?'none':'1px solid var(--border-subtle)', boxShadow:tag===t?'0 4px 12px rgba(99,102,241,0.3)':'none', transition:'all 0.15s' }}>
             {t}
           </button>
         ))}

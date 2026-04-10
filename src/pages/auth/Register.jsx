@@ -34,7 +34,7 @@ const Register = () => {
   }
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: 'var(--bg-primary)', padding: '16px' }}>
+    <div style={{ position: 'relative',  minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: 'var(--bg-primary)', padding: '16px' }}>
       <ThreeBackground />
       <div style={{ position: 'fixed', inset: 0, zIndex: 1, background: 'radial-gradient(ellipse at 75% 50%, rgba(139,92,246,0.06) 0%, transparent 60%)', pointerEvents: 'none' }} />
 
