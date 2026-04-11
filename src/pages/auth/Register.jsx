@@ -6,7 +6,7 @@ import { toggleTheme } from '../../store/slices/themeSlice'
 import ThreeBackground from '../../components/ThreeBackground'
 
 const Register = () => {
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '', role: 'CANDIDATE' })
+  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'CANDIDATE' })
   const [formError, setFormError] = useState('')
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -25,11 +25,10 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (form.password !== form.confirmPassword) { setFormError('Passwords do not match'); return }
     if (form.password.length < 6) { setFormError('Password must be at least 6 characters'); return }
     setFormError('')
-    const { confirmPassword, ...submitData } = form
-    const result = await dispatch(registerUser(submitData))
+    console.log(form)
+    const result = await dispatch(registerUser(form))
     if (registerUser.fulfilled.match(result)) navigate('/dashboard')
   }
 
@@ -65,15 +64,9 @@ const Register = () => {
               <label className="form-label">Email Address</label>
               <input type="email" className="form-control" placeholder="you@example.com" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} required />
             </div>
-            <div className="grid-2">
-              <div className="form-group">
-                <label className="form-label">Password</label>
-                <input type="password" className="form-control" placeholder="Min 6 chars" value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))} required />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Confirm</label>
-                <input type="password" className="form-control" placeholder="Repeat" value={form.confirmPassword} onChange={e => setForm(p => ({ ...p, confirmPassword: e.target.value }))} required />
-              </div>
+            <div className="form-group">
+              <label className="form-label">Password</label>
+              <input type="password" className="form-control" placeholder="Min 6 chars" value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))} required />
             </div>
             <div className="form-group">
               <label className="form-label">I am a…</label>

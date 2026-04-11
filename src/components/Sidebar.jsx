@@ -19,7 +19,7 @@ const ROLE_STYLE = {
   CANDIDATE: { color: '#818cf8', bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.3)' },
 }
 
-const Sidebar = ({ onClose }) => {
+const Sidebar = ({ onClose,isDesktopS,sidebarOpenS }) => {
   const { user } = useSelector(s => s.auth)
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -33,7 +33,8 @@ const Sidebar = ({ onClose }) => {
   }
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${(!isDesktopS && !sidebarOpenS) ? '' : (isDesktopS ? 'visible' : sidebarOpenS ? 'visible' : '')}`}
+        style={isDesktopS ? { transform: 'none' } : {}}>
       {/* Logo */}
       <div style={{ padding: '20px 18px 16px', borderBottom: '1px solid var(--border-subtle)', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -43,7 +44,7 @@ const Sidebar = ({ onClose }) => {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 16, color: 'white',
             boxShadow: '0 4px 16px rgba(99,102,241,0.4)',
-          }}>R</div>
+          }}>rE</div>
           <div>
             <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 17, color: 'var(--text-primary)', lineHeight: 1 }}>recruitEdge</div>
             <div style={{ fontSize: 9, color: 'var(--text-muted)', letterSpacing: '1.2px', marginTop: 2, textTransform: 'uppercase' }}>Smart Hiring</div>

@@ -22,7 +22,7 @@ export const loginUser = createAsyncThunk('auth/login', async ({ email, password
     try {
       const res = await api.post('/auth/login', { email, password })
       return res.data
-    } catch {
+    } catch (ex){
       const user = MOCK_USERS.find(u => u.email === email && u.password === password)
       if (!user) throw new Error('Invalid credentials')
       const token = generateMockToken(user)
@@ -41,31 +41,22 @@ export const registerUser = createAsyncThunk('auth/register', async (userData, {
       const res = await api.post('/auth/register', userData)
       return res.data
     } catch {
-      const newUser = {
-        id: String(Date.now()),
-        name: userData.name,
-        email: userData.email,
-        role: userData.role || 'CANDIDATE',
-      }
-      const token = generateMockToken(newUser)
-      return { token, user: newUser }
+      return rejectWithValue(err.message || 'Registration failed')
     }
   } catch (err) {
     return rejectWithValue(err.message || 'Registration failed')
   }
 })
 
-export const googleLogin = createAsyncThunk('auth/googleLogin', async (_, { rejectWithValue }) => {
+export const googleLogin = createAsyncThunk('auth/googleLogin', async (tokenData, { rejectWithValue }) => {
   try {
     await new Promise(resolve => setTimeout(resolve, 600))
-    const googleUser = {
-      id: 'g_' + Date.now(),
-      name: 'Google User',
-      email: 'google.user@gmail.com',
-      role: 'CANDIDATE',
+    try {
+      const res = await api.post('/auth/googleLogin', tokenData)
+      return res.data
+    } catch {
+      return rejectWithValue(err.message || 'Google Login failed')
     }
-    const token = generateMockToken(googleUser)
-    return { token, user: googleUser }
   } catch (err) {
     return rejectWithValue('Google login failed')
   }
@@ -106,7 +97,7 @@ const authSlice = createSlice({
     }
     const handleRejected = (state, action) => {
       state.loading = false
-      state.error = action.payload
+      state.error = action.payload?.response?.data.message || 'Server down try after something'
     }
     builder
       .addCase(loginUser.pending, handlePending)

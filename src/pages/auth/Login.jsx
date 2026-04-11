@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { loginUser, googleLogin, clearError } from '../../store/slices/authSlice'
 import { toggleTheme } from '../../store/slices/themeSlice'
 import ThreeBackground from '../../components/ThreeBackground'
+import { GoogleLogin,useGoogleLogin} from '@react-oauth/google'
 
 const DEMO = [
   { label: 'Admin',     email: 'admin@recruitEdge.com',     password: 'admin123', color: '#f43f5e' },
@@ -34,11 +35,15 @@ const Login = () => {
     if (loginUser.fulfilled.match(result)) navigate('/dashboard')
   }
 
-  const handleGoogle = async () => {
-    const result = await dispatch(googleLogin())
-    if (googleLogin.fulfilled.match(result)) navigate('/dashboard')
-  }
-
+  const handleGoogle =  useGoogleLogin({
+    onSuccess: async (credentialResponse) => {
+        const token = credentialResponse.access_token
+        const result = await dispatch(googleLogin(token))
+        if (googleLogin.fulfilled.match(result)) navigate('/dashboard')
+    },
+    onError: () => console.error('Google Login Failed'),
+  })
+  
   return (
     <div style={{ position: 'relative', minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: 'var(--bg-primary)', padding: '16px' }}>
       <ThreeBackground />
@@ -64,7 +69,7 @@ const Login = () => {
 
         {/* Card */}
         <div className="glass-card auth-card" style={{ padding: 28 }}>
-          {error && <div className="alert alert-error">⚠️ {error}</div>}
+          {error && <div className="alert alert-error">⚠️{' '} {error}</div>}
 
           {/* Demo quick fill */}
           <div style={{ marginBottom: 22 }}>

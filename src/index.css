@@ -237,6 +237,55 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 }
 .sidebar-overlay.show { display:block; }
 
+/* 
+
+.sidebar-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 200;
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+}
+
+@media (min-width: 1025px) {
+  .sidebar-wrapper {
+    position: relative;
+    transform: none;
+    height: auto;
+    z-index: auto;
+  }
+}
+
+
+.sidebar-wrapper.open {
+  transform: translateX(0);
+}
+
+.sidebar {
+  width: 240px;         
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);      
+  border-right: 1px solid var(--border-subtle);
+  overflow-y: auto;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.show {
+  display: block;
+} */
+
 /* ── NAVBAR ───────────────────────────────────────────────────────────────── */
 .navbar {
   position:fixed; top:0; right:0; left:var(--sidebar-width);

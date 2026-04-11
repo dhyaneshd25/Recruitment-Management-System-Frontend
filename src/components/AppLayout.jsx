@@ -44,7 +44,7 @@ const AppLayout = ({ children }) => {
       <div className={`sidebar ${(!isDesktop && !sidebarOpen) ? '' : (isDesktop ? 'visible' : sidebarOpen ? 'visible' : '')}`}
         style={isDesktop ? { transform: 'none' } : {}}
       >
-        <Sidebar onClose={closeSidebar} />
+        <Sidebar onClose={closeSidebar} isDesktopS={isDesktop} sidebarOpenS={sidebarOpen}/>
       </div>
 
       {/* Mobile overlay */}
