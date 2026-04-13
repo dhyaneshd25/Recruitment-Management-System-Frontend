@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUsers, createUser, updateUser, deleteUser } from '../../store/slices/userSlice'
 
-const ROLES = ['ADMIN', 'HR', 'CANDIDATE']
+const ROLES = ['ADMIN', 'Recuriter', 'CANDIDATE']
 const EMPTY = { name: '', email: '', password: '', role: 'CANDIDATE' }
-const roleBadge = { ADMIN: 'badge-red', HR: 'badge-green', CANDIDATE: 'badge-blue' }
+const roleBadge = { ADMIN: 'badge-red', Recuriter: 'badge-green', CANDIDATE: 'badge-blue' }
 
 const UserModal = ({ initial, onClose, onSave }) => {
   const [form, setForm] = useState(initial ? { ...initial, password: '' } : EMPTY)
@@ -98,7 +98,7 @@ const Users = () => {
             <div key={role} className="glass-card stat-card" style={{ cursor: 'pointer' }} onClick={() => setFilterRole(filterRole === role ? 'ALL' : role)}>
               <div className="stat-icon" style={{ background: `${colors[i]}18`, color: colors[i] }}>{icons[i]}</div>
               <div className="stat-number" style={{ background: `linear-gradient(135deg, ${colors[i]}, ${colors[i]}aa)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{roleCount(role)}</div>
-              <div className="stat-label">{role === 'ADMIN' ? 'Admins' : role === 'HR' ? 'HR Managers' : 'Candidates'}</div>
+              <div className="stat-label">{role === 'ADMIN' ? 'Admins' : role === 'Recuriter' ? 'Recuriter Managers' : 'Candidates'}</div>
             </div>
           )
         })}
@@ -132,7 +132,7 @@ const Users = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       <div style={{
                         width: 36, height: 36, borderRadius: '50%',
-                        background: u.role === 'ADMIN' ? 'linear-gradient(135deg,#f43f5e,#fb923c)' : u.role === 'HR' ? 'linear-gradient(135deg,#10b981,#22d3ee)' : 'linear-gradient(135deg,#6366f1,#8b5cf6)',
+                        background: u.role === 'ADMIN' ? 'linear-gradient(135deg,#f43f5e,#fb923c)' : u.role === 'Recuriter' ? 'linear-gradient(135deg,#10b981,#22d3ee)' : 'linear-gradient(135deg,#6366f1,#8b5cf6)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', flexShrink: 0,
                       }}>

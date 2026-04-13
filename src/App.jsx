@@ -48,19 +48,19 @@ const App = () => {
           </ProtectedRoute>
         } />
 
-        {/* Admin + HR */}
+        {/* Admin + Recuriter */}
         <Route path="/jobs" element={
-          <ProtectedRoute allowedRoles={['ADMIN','HR']}>
+          <ProtectedRoute allowedRoles={['ADMIN','RECURITER']}>
             <AppLayout><Jobs /></AppLayout>
           </ProtectedRoute>
         } />
         <Route path="/candidates" element={
-          <ProtectedRoute allowedRoles={['ADMIN','HR']}>
+          <ProtectedRoute allowedRoles={['ADMIN','RECURITER']}>
             <AppLayout><Candidates /></AppLayout>
           </ProtectedRoute>
         } />
         <Route path="/interviews" element={
-          <ProtectedRoute allowedRoles={['ADMIN','HR']}>
+          <ProtectedRoute allowedRoles={['ADMIN','RECURITER']}>
             <AppLayout><Interviews /></AppLayout>
           </ProtectedRoute>
         } />

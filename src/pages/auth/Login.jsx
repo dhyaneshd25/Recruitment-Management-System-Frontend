@@ -8,7 +8,7 @@ import { GoogleLogin,useGoogleLogin} from '@react-oauth/google'
 
 const DEMO = [
   { label: 'Admin',     email: 'admin@recruitEdge.com',     password: 'admin123', color: '#f43f5e' },
-  { label: 'HR',        email: 'hr@recruitEdge.com',         password: 'hr123',    color: '#10b981' },
+  { label: 'Recuriter',        email: 'hr@recruitEdge.com',         password: 'hr123',    color: '#10b981' },
   { label: 'Candidate', email: 'candidate@recruitEdge.com', password: 'cand123',  color: '#6366f1' },
 ]
 

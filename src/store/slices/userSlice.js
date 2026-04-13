@@ -2,9 +2,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 let mockUsers = [
   { id: '1', name: 'Alex Admin', email: 'admin@recruitEdge.com', role: 'ADMIN' },
-  { id: '2', name: 'HR Manager', email: 'hr@recruitEdge.com', role: 'HR' },
+  { id: '2', name: 'Recuriter Manager', email: 'hr@recruitEdge.com', role: 'Recuriter' },
   { id: '3', name: 'John Candidate', email: 'candidate@recruitEdge.com', role: 'CANDIDATE' },
-  { id: '4', name: 'Sarah HR', email: 'sarah@recruitEdge.com', role: 'HR' },
+  { id: '4', name: 'Sarah Recuriter', email: 'sarah@recruitEdge.com', role: 'Recuriter' },
   { id: '5', name: 'Mike Dev', email: 'mike@example.com', role: 'CANDIDATE' },
 ]
 

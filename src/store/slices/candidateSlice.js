@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-// Seed data - these are HR-managed entries (not user-applied)
+// Seed data - these are Recuriter-managed entries (not user-applied)
 let mockCandidates = [
   { id: '1', userName: 'Rahul Sharma', userId: 'u1', jobId: '1', jobTitle: 'Senior React Developer', resumeUrl: 'https://drive.google.com/file/sample1', status: 'SHORTLISTED', createdAt: '2024-01-15T10:30:00' },
   { id: '2', userName: 'Priya Patel',  userId: 'u2', jobId: '2', jobTitle: 'Backend Java Engineer',  resumeUrl: 'https://drive.google.com/file/sample2', status: 'INTERVIEW_SCHEDULED', createdAt: '2024-01-16T11:00:00' },
@@ -23,7 +23,7 @@ export const fetchCandidates = createAsyncThunk('candidates/fetchAll', async () 
   return [...mockCandidates, ...persisted]
 })
 
-// Called by HR to manually add a candidate entry
+// Called by Recuriter to manually add a candidate entry
 export const createCandidate = createAsyncThunk('candidates/create', async (data) => {
   await new Promise(r => setTimeout(r, 400))
   const entry = { ...data, id: String(Date.now()), createdAt: new Date().toISOString() }

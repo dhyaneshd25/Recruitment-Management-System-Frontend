@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../store/slices/authSlice'
 
 const NAV = [
-  { to: '/dashboard',       icon: '▦',  label: 'Dashboard',        roles: ['ADMIN','HR','CANDIDATE'] },
-  { to: '/jobs',            icon: '💼', label: 'Manage Jobs',       roles: ['ADMIN','HR'] },
-  { to: '/candidates',      icon: '👤', label: 'Candidates',        roles: ['ADMIN','HR'] },
-  { to: '/interviews',      icon: '🎯', label: 'Interviews',        roles: ['ADMIN','HR'] },
+  { to: '/dashboard',       icon: '▦',  label: 'Dashboard',        roles: ['ADMIN','RECURITER','CANDIDATE'] },
+  { to: '/jobs',            icon: '💼', label: 'Manage Jobs',       roles: ['ADMIN','RECURITER'] },
+  { to: '/candidates',      icon: '👤', label: 'Candidates',        roles: ['ADMIN','RECURITER'] },
+  { to: '/interviews',      icon: '🎯', label: 'Interviews',        roles: ['ADMIN','RECURITER'] },
   { to: '/users',           icon: '👥', label: 'Users',             roles: ['ADMIN'] },
   { to: '/browse-jobs',     icon: '🔍', label: 'Browse Jobs',       roles: ['CANDIDATE'] },
   { to: '/my-applications', icon: '📋', label: 'My Applications',   roles: ['CANDIDATE'] },
@@ -15,7 +15,7 @@ const NAV = [
 
 const ROLE_STYLE = {
   ADMIN:     { color: '#f43f5e', bg: 'rgba(244,63,94,0.12)',  border: 'rgba(244,63,94,0.3)' },
-  HR:        { color: '#10b981', bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.3)' },
+  RECURITER:        { color: '#10b981', bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.3)' },
   CANDIDATE: { color: '#818cf8', bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.3)' },
 }
 
@@ -88,9 +88,9 @@ const Sidebar = ({ onClose,isDesktopS,sidebarOpenS }) => {
       {/* Nav */}
       <nav style={{ flex: 1, padding: '10px 8px', display: 'flex', flexDirection: 'column', gap: 2, overflowY: 'auto' }}>
         <div style={{ fontSize: 9, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '1px', padding: '4px 10px 8px', textTransform: 'uppercase' }}>Navigation</div>
-        {myNav.map(item => (
+        {myNav.map((item,i) => (
           <NavLink
-            key={item.to}
+            key={i}
             to={item.to}
             onClick={onClose}
             style={({ isActive }) => ({

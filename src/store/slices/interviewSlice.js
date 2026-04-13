@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 let mockInterviews = [
-  { id: '1', candidateId: '3', candidateName: 'Amit Kumar', interviewerId: '2', interviewerName: 'HR Manager', interviewDate: '2024-02-01', interviewTime: '10:00', duration: 60, mode: 'VIDEO', meetingLink: 'https://meet.google.com/abc-defg-hij', feedback: 'Strong React fundamentals, good problem-solving skills.', status: 'COMPLETED' },
+  { id: '1', candidateId: '3', candidateName: 'Amit Kumar', interviewerId: '2', interviewerName: 'Recuriter Manager', interviewDate: '2024-02-01', interviewTime: '10:00', duration: 60, mode: 'VIDEO', meetingLink: 'https://meet.google.com/abc-defg-hij', feedback: 'Strong React fundamentals, good problem-solving skills.', status: 'COMPLETED' },
   { id: '2', candidateId: '2', candidateName: 'Priya Patel', interviewerId: '1', interviewerName: 'Alex Admin', interviewDate: '2024-02-05', interviewTime: '14:00', duration: 45, mode: 'IN_PERSON', meetingLink: '', feedback: '', status: 'SCHEDULED' },
-  { id: '3', candidateId: '6', candidateName: 'Anjali Mehta', interviewerId: '2', interviewerName: 'HR Manager', interviewDate: '2024-02-08', interviewTime: '11:00', duration: 30, mode: 'PHONE', meetingLink: '', feedback: '', status: 'SCHEDULED' },
+  { id: '3', candidateId: '6', candidateName: 'Anjali Mehta', interviewerId: '2', interviewerName: 'Recuriter Manager', interviewDate: '2024-02-08', interviewTime: '11:00', duration: 30, mode: 'PHONE', meetingLink: '', feedback: '', status: 'SCHEDULED' },
   { id: '4', candidateId: '1', candidateName: 'Rahul Sharma', interviewerId: '1', interviewerName: 'Alex Admin', interviewDate: '2024-01-28', interviewTime: '15:00', duration: 60, mode: 'VIDEO', meetingLink: 'https://meet.google.com/xyz-abcd-efg', feedback: 'Average performance. Needs improvement in system design.', status: 'CANCELLED' },
 ]
 

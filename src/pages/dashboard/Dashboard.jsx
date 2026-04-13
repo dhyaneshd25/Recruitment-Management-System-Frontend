@@ -142,7 +142,7 @@ const CandidateDashboard = ({ user, candidates, interviews }) => {
   )
 }
 
-// ── Admin/HR dashboard ─────────────────────────────────────────────────────────
+// ── Admin/Recuriter dashboard ─────────────────────────────────────────────────────────
 const AdminDashboard = ({ user, jobs, candidates, interviews }) => {
   const navigate = useNavigate()
   const PIPELINE = ['APPLIED','SHORTLISTED','INTERVIEW_SCHEDULED','HIRED','REJECTED']
@@ -250,7 +250,7 @@ const Dashboard = () => {
   useEffect(() => {
     dispatch(fetchCandidates())
     dispatch(fetchInterviews())
-    if (['ADMIN','HR'].includes(user?.role)) {
+    if (['ADMIN','Recuriter'].includes(user?.role)) {
       dispatch(fetchJobs())
       if (user?.role==='ADMIN') dispatch(fetchUsers())
     }

@@ -72,7 +72,7 @@ const Register = () => {
               <label className="form-label">I am a…</label>
               <select className="form-control" value={form.role} onChange={e => setForm(p => ({ ...p, role: e.target.value }))}>
                 <option value="CANDIDATE">Job Seeker / Candidate</option>
-                <option value="HR">HR Manager</option>
+                <option value="RECURITER">Recuriter Manager</option>
                 <option value="ADMIN">Admin</option>
               </select>
             </div>

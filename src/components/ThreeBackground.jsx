@@ -1,6 +1,6 @@
 // import { useEffect, useRef } from 'react'
 // import { useSelector } from 'react-redux'
-// import * as THREE from 'three'
+// import * as TRecuriterEE from 'three'
 
 // const ThreeBackground = () => {
 //   const mountRef = useRef(null)
@@ -12,11 +12,11 @@
 //     if (!mount) return
 
 //     const W = mount.clientWidth, H = mount.clientHeight
-//     const scene = new THREE.Scene()
-//     const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 1000)
+//     const scene = new TRecuriterEE.Scene()
+//     const camera = new TRecuriterEE.PerspectiveCamera(60, W / H, 0.1, 1000)
 //     camera.position.set(0, 0, 40)
 
-//     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+//     const renderer = new TRecuriterEE.WebGLRenderer({ antialias: true, alpha: true })
 //     renderer.setSize(W, H)
 //     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 //     renderer.setClearColor(0x000000, 0)
@@ -24,10 +24,10 @@
 
 //     // ── Theme-aware color palette ─────────────────────────────────────────
 //     const palette = isLight
-//       ? [new THREE.Color('#6366f1'), new THREE.Color('#8b5cf6'), new THREE.Color('#0ea5e9'), new THREE.Color('#a78bfa'), new THREE.Color('#6366f1')]
-//       : [new THREE.Color('#ffffff'), new THREE.Color('#c7d2fe'), new THREE.Color('#818cf8'), new THREE.Color('#38bdf8'), new THREE.Color('#a78bfa')]
+//       ? [new TRecuriterEE.Color('#6366f1'), new TRecuriterEE.Color('#8b5cf6'), new TRecuriterEE.Color('#0ea5e9'), new TRecuriterEE.Color('#a78bfa'), new TRecuriterEE.Color('#6366f1')]
+//       : [new TRecuriterEE.Color('#ffffff'), new TRecuriterEE.Color('#c7d2fe'), new TRecuriterEE.Color('#818cf8'), new TRecuriterEE.Color('#38bdf8'), new TRecuriterEE.Color('#a78bfa')]
 
-//     const coreColors = [new THREE.Color('#6366f1'), new THREE.Color('#8b5cf6'), new THREE.Color('#22d3ee')]
+//     const coreColors = [new TRecuriterEE.Color('#6366f1'), new TRecuriterEE.Color('#8b5cf6'), new TRecuriterEE.Color('#22d3ee')]
 //     const armR = 0.39, armG = 0.40, armB = 0.94
 
 //     // ── Star field ────────────────────────────────────────────────────────
@@ -44,14 +44,14 @@
 //       const c = palette[Math.floor(Math.random() * palette.length)]
 //       starCol[i*3] = c.r; starCol[i*3+1] = c.g; starCol[i*3+2] = c.b
 //     }
-//     const starGeo = new THREE.BufferGeometry()
-//     starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3))
-//     starGeo.setAttribute('color', new THREE.BufferAttribute(starCol, 3))
-//     const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({
+//     const starGeo = new TRecuriterEE.BufferGeometry()
+//     starGeo.setAttribute('position', new TRecuriterEE.BufferAttribute(starPos, 3))
+//     starGeo.setAttribute('color', new TRecuriterEE.BufferAttribute(starCol, 3))
+//     const stars = new TRecuriterEE.Points(starGeo, new TRecuriterEE.PointsMaterial({
 //       size: isLight ? 0.22 : 0.28,
 //       vertexColors: true, transparent: true,
 //       opacity: isLight ? 0.6 : 0.85,
-//       blending: THREE.AdditiveBlending, depthWrite: false,
+//       blending: TRecuriterEE.AdditiveBlending, depthWrite: false,
 //     }))
 //     scene.add(stars)
 
@@ -69,13 +69,13 @@
 //       const c = coreColors[Math.floor(Math.random() * 3)]
 //       coreCol[i*3] = c.r; coreCol[i*3+1] = c.g; coreCol[i*3+2] = c.b
 //     }
-//     const coreGeo = new THREE.BufferGeometry()
-//     coreGeo.setAttribute('position', new THREE.BufferAttribute(corePos, 3))
-//     coreGeo.setAttribute('color', new THREE.BufferAttribute(coreCol, 3))
-//     const core = new THREE.Points(coreGeo, new THREE.PointsMaterial({
+//     const coreGeo = new TRecuriterEE.BufferGeometry()
+//     coreGeo.setAttribute('position', new TRecuriterEE.BufferAttribute(corePos, 3))
+//     coreGeo.setAttribute('color', new TRecuriterEE.BufferAttribute(coreCol, 3))
+//     const core = new TRecuriterEE.Points(coreGeo, new TRecuriterEE.PointsMaterial({
 //       size: 0.52, vertexColors: true, transparent: true,
 //       opacity: isLight ? 0.55 : 0.88,
-//       blending: THREE.AdditiveBlending, depthWrite: false,
+//       blending: TRecuriterEE.AdditiveBlending, depthWrite: false,
 //     }))
 //     scene.add(core)
 
@@ -96,13 +96,13 @@
 //         pos[i*3+2] = Math.sin(angle) * radius + (Math.random()-0.5)*spread*3
 //         col[i*3] = armR + t*0.15; col[i*3+1] = armG - t*0.05; col[i*3+2] = armB - t*0.1
 //       }
-//       const ag = new THREE.BufferGeometry()
-//       ag.setAttribute('position', new THREE.BufferAttribute(pos, 3))
-//       ag.setAttribute('color', new THREE.BufferAttribute(col, 3))
-//       const ap = new THREE.Points(ag, new THREE.PointsMaterial({
+//       const ag = new TRecuriterEE.BufferGeometry()
+//       ag.setAttribute('position', new TRecuriterEE.BufferAttribute(pos, 3))
+//       ag.setAttribute('color', new TRecuriterEE.BufferAttribute(col, 3))
+//       const ap = new TRecuriterEE.Points(ag, new TRecuriterEE.PointsMaterial({
 //         size: 0.42, vertexColors: true, transparent: true,
 //         opacity: isLight ? 0.4 : 0.65,
-//         blending: THREE.AdditiveBlending, depthWrite: false,
+//         blending: TRecuriterEE.AdditiveBlending, depthWrite: false,
 //       }))
 //       ap.rotation.x = Math.PI * 0.18
 //       scene.add(ap)
@@ -114,14 +114,14 @@
 //     const shapeOpacity = isLight ? 0.06 : 0.1
 //     const shapes = []
 //     const defs = [
-//       { geo: new THREE.IcosahedronGeometry(3.5, 1), pos: [-14, 6, -8],   op: shapeOpacity * 1.0 },
-//       { geo: new THREE.OctahedronGeometry(2.5, 0),  pos: [12, -5, -5],   op: shapeOpacity * 1.2 },
-//       { geo: new THREE.TetrahedronGeometry(2.0, 0), pos: [0, 10, -12],   op: shapeOpacity * 0.9 },
-//       { geo: new THREE.IcosahedronGeometry(2.0, 0), pos: [16, 8, -10],   op: shapeOpacity * 0.8 },
-//       { geo: new THREE.OctahedronGeometry(1.5, 0),  pos: [-16, -8, -6],  op: shapeOpacity * 1.0 },
+//       { geo: new TRecuriterEE.IcosahedronGeometry(3.5, 1), pos: [-14, 6, -8],   op: shapeOpacity * 1.0 },
+//       { geo: new TRecuriterEE.OctahedronGeometry(2.5, 0),  pos: [12, -5, -5],   op: shapeOpacity * 1.2 },
+//       { geo: new TRecuriterEE.TetrahedronGeometry(2.0, 0), pos: [0, 10, -12],   op: shapeOpacity * 0.9 },
+//       { geo: new TRecuriterEE.IcosahedronGeometry(2.0, 0), pos: [16, 8, -10],   op: shapeOpacity * 0.8 },
+//       { geo: new TRecuriterEE.OctahedronGeometry(1.5, 0),  pos: [-16, -8, -6],  op: shapeOpacity * 1.0 },
 //     ]
 //     defs.forEach(d => {
-//       const m = new THREE.Mesh(d.geo, new THREE.MeshBasicMaterial({ color: shapeColor, wireframe: true, transparent: true, opacity: d.op }))
+//       const m = new TRecuriterEE.Mesh(d.geo, new TRecuriterEE.MeshBasicMaterial({ color: shapeColor, wireframe: true, transparent: true, opacity: d.op }))
 //       m.position.set(...d.pos)
 //       m.userData = { rx: (Math.random()-0.5)*0.006, ry: (Math.random()-0.5)*0.008, fy: Math.random()*0.004+0.002, fo: Math.random()*Math.PI*2 }
 //       scene.add(m); shapes.push(m)
@@ -129,16 +129,16 @@
 
 //     // ── Neural net lines ──────────────────────────────────────────────────
 //     const nodes = Array.from({length: 55}, () =>
-//       new THREE.Vector3((Math.random()-0.5)*70, (Math.random()-0.5)*50, (Math.random()-0.5)*30-10)
+//       new TRecuriterEE.Vector3((Math.random()-0.5)*70, (Math.random()-0.5)*50, (Math.random()-0.5)*30-10)
 //     )
 //     const linesArr = []
 //     nodes.forEach((a, i) => nodes.forEach((b, j) => {
 //       if (j <= i) return
 //       if (a.distanceTo(b) < 18) linesArr.push(a.x,a.y,a.z,b.x,b.y,b.z)
 //     }))
-//     const lineGeo = new THREE.BufferGeometry()
-//     lineGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(linesArr), 3))
-//     const linesMesh = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({
+//     const lineGeo = new TRecuriterEE.BufferGeometry()
+//     lineGeo.setAttribute('position', new TRecuriterEE.BufferAttribute(new Float32Array(linesArr), 3))
+//     const linesMesh = new TRecuriterEE.LineSegments(lineGeo, new TRecuriterEE.LineBasicMaterial({
 //       color: 0x6366f1, transparent: true, opacity: isLight ? 0.04 : 0.055,
 //     }))
 //     scene.add(linesMesh)
@@ -161,7 +161,7 @@
 //     window.addEventListener('resize', onResize)
 
 //     // ── Animate ────────────────────────────────────────────────────────────
-//     const clock = new THREE.Clock()
+//     const clock = new TRecuriterEE.Clock()
 //     let cx = 0, cy = 0, raf
 //     const animate = () => {
 //       raf = requestAnimationFrame(animate)
@@ -205,7 +205,7 @@
 
 // export default ThreeBackground
 // import { useEffect, useRef } from 'react'
-// import * as THREE from 'three'
+// import * as TRecuriterEE from 'three'
 
 // const ThreeBackground = () => {
 //   const mountRef = useRef(null)
@@ -215,11 +215,11 @@
 //     if (!mount) return
 
 //     const W = mount.clientWidth, H = mount.clientHeight
-//     const scene = new THREE.Scene()
-//     const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 1000)
+//     const scene = new TRecuriterEE.Scene()
+//     const camera = new TRecuriterEE.PerspectiveCamera(60, W / H, 0.1, 1000)
 //     camera.position.set(0, 0, 40)
 
-//     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+//     const renderer = new TRecuriterEE.WebGLRenderer({ antialias: true, alpha: true })
 //     renderer.setSize(W, H)
 //     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 //     renderer.setClearColor(0x000000, 0)
@@ -230,8 +230,8 @@
 //     const starPos = new Float32Array(starCount * 3)
 //     const starCol = new Float32Array(starCount * 3)
 //     const colorOptions = [
-//       new THREE.Color('#ffffff'), new THREE.Color('#c7d2fe'),
-//       new THREE.Color('#818cf8'), new THREE.Color('#38bdf8'), new THREE.Color('#a78bfa'),
+//       new TRecuriterEE.Color('#ffffff'), new TRecuriterEE.Color('#c7d2fe'),
+//       new TRecuriterEE.Color('#818cf8'), new TRecuriterEE.Color('#38bdf8'), new TRecuriterEE.Color('#a78bfa'),
 //     ]
 //     for (let i = 0; i < starCount; i++) {
 //       const r = 60 + Math.random() * 80
@@ -243,12 +243,12 @@
 //       const c = colorOptions[Math.floor(Math.random() * colorOptions.length)]
 //       starCol[i*3] = c.r; starCol[i*3+1] = c.g; starCol[i*3+2] = c.b
 //     }
-//     const starGeo = new THREE.BufferGeometry()
-//     starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3))
-//     starGeo.setAttribute('color', new THREE.BufferAttribute(starCol, 3))
-//     const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({
+//     const starGeo = new TRecuriterEE.BufferGeometry()
+//     starGeo.setAttribute('position', new TRecuriterEE.BufferAttribute(starPos, 3))
+//     starGeo.setAttribute('color', new TRecuriterEE.BufferAttribute(starCol, 3))
+//     const stars = new TRecuriterEE.Points(starGeo, new TRecuriterEE.PointsMaterial({
 //       size: 0.28, vertexColors: true, transparent: true, opacity: 0.85,
-//       blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
+//       blending: TRecuriterEE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
 //     }))
 //     scene.add(stars)
 
@@ -256,7 +256,7 @@
 //     const coreCount = 600
 //     const corePos = new Float32Array(coreCount * 3)
 //     const coreCol = new Float32Array(coreCount * 3)
-//     const coreColors = [new THREE.Color('#6366f1'), new THREE.Color('#8b5cf6'), new THREE.Color('#22d3ee')]
+//     const coreColors = [new TRecuriterEE.Color('#6366f1'), new TRecuriterEE.Color('#8b5cf6'), new TRecuriterEE.Color('#22d3ee')]
 //     for (let i = 0; i < coreCount; i++) {
 //       const r = Math.random() * 22
 //       const theta = Math.random() * Math.PI * 2
@@ -267,12 +267,12 @@
 //       const c = coreColors[Math.floor(Math.random() * 3)]
 //       coreCol[i*3] = c.r; coreCol[i*3+1] = c.g; coreCol[i*3+2] = c.b
 //     }
-//     const coreGeo = new THREE.BufferGeometry()
-//     coreGeo.setAttribute('position', new THREE.BufferAttribute(corePos, 3))
-//     coreGeo.setAttribute('color', new THREE.BufferAttribute(coreCol, 3))
-//     const core = new THREE.Points(coreGeo, new THREE.PointsMaterial({
+//     const coreGeo = new TRecuriterEE.BufferGeometry()
+//     coreGeo.setAttribute('position', new TRecuriterEE.BufferAttribute(corePos, 3))
+//     coreGeo.setAttribute('color', new TRecuriterEE.BufferAttribute(coreCol, 3))
+//     const core = new TRecuriterEE.Points(coreGeo, new TRecuriterEE.PointsMaterial({
 //       size: 0.55, vertexColors: true, transparent: true, opacity: 0.9,
-//       blending: THREE.AdditiveBlending, depthWrite: false,
+//       blending: TRecuriterEE.AdditiveBlending, depthWrite: false,
 //     }))
 //     scene.add(core)
 
@@ -295,12 +295,12 @@
 //         armCol[i*3+1] = 0.40 - t*0.05
 //         armCol[i*3+2] = 0.94 - t*0.1
 //       }
-//       const ag = new THREE.BufferGeometry()
-//       ag.setAttribute('position', new THREE.BufferAttribute(armPos, 3))
-//       ag.setAttribute('color', new THREE.BufferAttribute(armCol, 3))
-//       const ap = new THREE.Points(ag, new THREE.PointsMaterial({
+//       const ag = new TRecuriterEE.BufferGeometry()
+//       ag.setAttribute('position', new TRecuriterEE.BufferAttribute(armPos, 3))
+//       ag.setAttribute('color', new TRecuriterEE.BufferAttribute(armCol, 3))
+//       const ap = new TRecuriterEE.Points(ag, new TRecuriterEE.PointsMaterial({
 //         size: 0.45, vertexColors: true, transparent: true, opacity: 0.65,
-//         blending: THREE.AdditiveBlending, depthWrite: false,
+//         blending: TRecuriterEE.AdditiveBlending, depthWrite: false,
 //       }))
 //       ap.rotation.x = Math.PI * 0.18
 //       scene.add(ap)
@@ -310,14 +310,14 @@
 //     // ── Wireframe shapes ───────────────────────────────────────────────────
 //     const shapes = []
 //     const shapeDefs = [
-//       { geo: new THREE.IcosahedronGeometry(3.5, 1), pos: [-14, 6, -8], color: 0x6366f1, opacity: 0.1 },
-//       { geo: new THREE.OctahedronGeometry(2.5, 0), pos: [12, -5, -5], color: 0x8b5cf6, opacity: 0.12 },
-//       { geo: new THREE.TetrahedronGeometry(2.0, 0), pos: [0, 10, -12], color: 0x22d3ee, opacity: 0.09 },
-//       { geo: new THREE.IcosahedronGeometry(2.0, 0), pos: [16, 8, -10], color: 0xa78bfa, opacity: 0.08 },
-//       { geo: new THREE.OctahedronGeometry(1.5, 0), pos: [-16, -8, -6], color: 0x38bdf8, opacity: 0.1 },
+//       { geo: new TRecuriterEE.IcosahedronGeometry(3.5, 1), pos: [-14, 6, -8], color: 0x6366f1, opacity: 0.1 },
+//       { geo: new TRecuriterEE.OctahedronGeometry(2.5, 0), pos: [12, -5, -5], color: 0x8b5cf6, opacity: 0.12 },
+//       { geo: new TRecuriterEE.TetrahedronGeometry(2.0, 0), pos: [0, 10, -12], color: 0x22d3ee, opacity: 0.09 },
+//       { geo: new TRecuriterEE.IcosahedronGeometry(2.0, 0), pos: [16, 8, -10], color: 0xa78bfa, opacity: 0.08 },
+//       { geo: new TRecuriterEE.OctahedronGeometry(1.5, 0), pos: [-16, -8, -6], color: 0x38bdf8, opacity: 0.1 },
 //     ]
 //     shapeDefs.forEach(d => {
-//       const m = new THREE.Mesh(d.geo, new THREE.MeshBasicMaterial({
+//       const m = new TRecuriterEE.Mesh(d.geo, new TRecuriterEE.MeshBasicMaterial({
 //         color: d.color, wireframe: true, transparent: true, opacity: d.opacity,
 //       }))
 //       m.position.set(...d.pos)
@@ -328,16 +328,16 @@
 
 //     // ── Neural net lines ──────────────────────────────────────────────────
 //     const nodes = Array.from({length: 60}, () =>
-//       new THREE.Vector3((Math.random()-0.5)*70, (Math.random()-0.5)*50, (Math.random()-0.5)*30-10)
+//       new TRecuriterEE.Vector3((Math.random()-0.5)*70, (Math.random()-0.5)*50, (Math.random()-0.5)*30-10)
 //     )
 //     const linesArr = []
 //     nodes.forEach((a, i) => nodes.forEach((b, j) => {
 //       if (j <= i) return
 //       if (a.distanceTo(b) < 18) linesArr.push(a.x, a.y, a.z, b.x, b.y, b.z)
 //     }))
-//     const lineGeo = new THREE.BufferGeometry()
-//     lineGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(linesArr), 3))
-//     const linesMesh = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({
+//     const lineGeo = new TRecuriterEE.BufferGeometry()
+//     lineGeo.setAttribute('position', new TRecuriterEE.BufferAttribute(new Float32Array(linesArr), 3))
+//     const linesMesh = new TRecuriterEE.LineSegments(lineGeo, new TRecuriterEE.LineBasicMaterial({
 //       color: 0x6366f1, transparent: true, opacity: 0.055,
 //     }))
 //     scene.add(linesMesh)
@@ -354,7 +354,7 @@
 //     window.addEventListener('resize', onResize)
 
 //     // ── Animate ───────────────────────────────────────────────────────────
-//     const clock = new THREE.Clock()
+//     const clock = new TRecuriterEE.Clock()
 //     let cx = 0, cy = 0, raf
 //     const animate = () => {
 //       raf = requestAnimationFrame(animate)
@@ -394,7 +394,7 @@
 
 // import { useEffect, useRef } from 'react'
 // import { useSelector } from 'react-redux'
-// import * as THREE from 'three'
+// import * as TRecuriterEE from 'three'
 
 // /* ─────────────────────────────────────────────────────────────────────────────
 //    recruitEdge Background — Three.js
@@ -417,7 +417,7 @@
 //   grad.addColorStop(1,   'rgba(255,255,255,0)')
 //   ctx.fillStyle = grad
 //   ctx.fillRect(0, 0, size, size)
-//   return new THREE.CanvasTexture(canvas)
+//   return new TRecuriterEE.CanvasTexture(canvas)
 // }
 
 // // Build a glowing ring texture
@@ -434,7 +434,7 @@
 //   grad.addColorStop(1,   'rgba(255,255,255,0)')
 //   ctx.fillStyle = grad
 //   ctx.fillRect(0, 0, size, size)
-//   return new THREE.CanvasTexture(canvas)
+//   return new TRecuriterEE.CanvasTexture(canvas)
 // }
 
 // const ThreeBackground = () => {
@@ -448,11 +448,11 @@
 
 //     // ── Renderer ──────────────────────────────────────────────────────────
 //     const W = mount.clientWidth, H = mount.clientHeight
-//     const scene = new THREE.Scene()
-//     const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 500)
+//     const scene = new TRecuriterEE.Scene()
+//     const camera = new TRecuriterEE.PerspectiveCamera(55, W / H, 0.1, 500)
 //     camera.position.set(0, 0, 50)
 
-//     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+//     const renderer = new TRecuriterEE.WebGLRenderer({ antialias: true, alpha: true })
 //     renderer.setSize(W, H)
 //     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 //     renderer.setClearColor(0x000000, 0)
@@ -466,7 +466,7 @@
 //       ? ['#6366f1','#8b5cf6','#0ea5e9','#a78bfa','#6366f1','#38bdf8']
 //       : ['#6366f1','#8b5cf6','#22d3ee','#a78bfa','#818cf8','#38bdf8']
 
-//     const threeColors = COLORS.map(c => new THREE.Color(c))
+//     const threeColors = COLORS.map(c => new TRecuriterEE.Color(c))
 //     const pickColor = () => threeColors[Math.floor(Math.random() * threeColors.length)]
 
 //     // ── 1. Drifting circle particles (sprite = always round) ──────────────
@@ -499,17 +499,17 @@
 //       })
 //     }
 
-//     const pGeo = new THREE.BufferGeometry()
-//     pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3))
-//     pGeo.setAttribute('color',    new THREE.BufferAttribute(pColors, 3))
-//     pGeo.setAttribute('size',     new THREE.BufferAttribute(pSizes, 1))
+//     const pGeo = new TRecuriterEE.BufferGeometry()
+//     pGeo.setAttribute('position', new TRecuriterEE.BufferAttribute(pPositions, 3))
+//     pGeo.setAttribute('color',    new TRecuriterEE.BufferAttribute(pColors, 3))
+//     pGeo.setAttribute('size',     new TRecuriterEE.BufferAttribute(pSizes, 1))
 
-//     const pMat = new THREE.PointsMaterial({
+//     const pMat = new TRecuriterEE.PointsMaterial({
 //       map: circleTex,
 //       vertexColors: true,
 //       transparent: true,
 //       opacity: isLight ? 0.42 : 0.65,
-//       blending: THREE.AdditiveBlending,
+//       blending: TRecuriterEE.AdditiveBlending,
 //       depthWrite: false,
 //       sizeAttenuation: true,
 //       size: 1,
@@ -517,7 +517,7 @@
 //     // We'll update sizes manually; use the size attribute via ShaderMaterial trick
 //     // Actually, PointsMaterial uses a single size. For per-particle size we'll use
 //     // a simple ShaderMaterial instead:
-//     const pMatShader = new THREE.ShaderMaterial({
+//     const pMatShader = new TRecuriterEE.ShaderMaterial({
 //       uniforms: { uTex: { value: circleTex }, uOpacity: { value: isLight ? 0.42 : 0.65 } },
 //       vertexShader: `
 //         attribute float size;
@@ -540,11 +540,11 @@
 //         }
 //       `,
 //       transparent: true,
-//       blending: THREE.AdditiveBlending,
+//       blending: TRecuriterEE.AdditiveBlending,
 //       depthWrite: false,
 //     })
 
-//     const particles = new THREE.Points(pGeo, pMatShader)
+//     const particles = new TRecuriterEE.Points(pGeo, pMatShader)
 //     scene.add(particles)
 
 //     // ── 2. Floating glowing ring circles ─────────────────────────────────
@@ -559,15 +559,15 @@
 //     ]
 
 //     const ringMeshes = RINGS.map(r => {
-//       const mat = new THREE.SpriteMaterial({
+//       const mat = new TRecuriterEE.SpriteMaterial({
 //         map: ringTex,
-//         color: new THREE.Color(r.color),
+//         color: new TRecuriterEE.Color(r.color),
 //         transparent: true,
 //         opacity: r.opacity,
-//         blending: THREE.AdditiveBlending,
+//         blending: TRecuriterEE.AdditiveBlending,
 //         depthWrite: false,
 //       })
-//       const sprite = new THREE.Sprite(mat)
+//       const sprite = new TRecuriterEE.Sprite(mat)
 //       sprite.position.set(r.x, r.y, r.z)
 //       sprite.scale.set(r.scale * 2, r.scale * 2, 1)
 //       sprite.userData = {
@@ -598,13 +598,13 @@
 //     // Pre-build line geometry with enough capacity
 //     const maxLines = NODE_COUNT * NODE_COUNT
 //     const linePositions = new Float32Array(maxLines * 6)
-//     const lineGeo = new THREE.BufferGeometry()
-//     lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3))
-//     const lineMat = new THREE.LineBasicMaterial({
+//     const lineGeo = new TRecuriterEE.BufferGeometry()
+//     lineGeo.setAttribute('position', new TRecuriterEE.BufferAttribute(linePositions, 3))
+//     const lineMat = new TRecuriterEE.LineBasicMaterial({
 //       color: 0x6366f1, transparent: true,
 //       opacity: isLight ? 0.07 : 0.12,
 //     })
-//     const linesMesh = new THREE.LineSegments(lineGeo, lineMat)
+//     const linesMesh = new TRecuriterEE.LineSegments(lineGeo, lineMat)
 //     scene.add(linesMesh)
 
 //     // ── 4. Large ambient circle halos (background depth) ──────────────────
@@ -614,15 +614,15 @@
 //       { x:-15, y: 12, z: -22, scale: 22, color: '#22d3ee', opacity: isLight ? 0.015 : 0.035 },
 //     ]
 //     HALOS.forEach(h => {
-//       const mat = new THREE.SpriteMaterial({
+//       const mat = new TRecuriterEE.SpriteMaterial({
 //         map: circleTex,
-//         color: new THREE.Color(h.color),
+//         color: new TRecuriterEE.Color(h.color),
 //         transparent: true,
 //         opacity: h.opacity,
-//         blending: THREE.AdditiveBlending,
+//         blending: TRecuriterEE.AdditiveBlending,
 //         depthWrite: false,
 //       })
-//       const sprite = new THREE.Sprite(mat)
+//       const sprite = new TRecuriterEE.Sprite(mat)
 //       sprite.position.set(h.x, h.y, h.z)
 //       sprite.scale.set(h.scale * 2, h.scale * 2, 1)
 //       scene.add(sprite)
@@ -647,7 +647,7 @@
 //     window.addEventListener('resize', onResize)
 
 //     // ── Animation loop ────────────────────────────────────────────────────
-//     const clock = new THREE.Clock()
+//     const clock = new TRecuriterEE.Clock()
 //     let cx = 0, cy = 0, raf
 
 //     const animate = () => {
@@ -745,7 +745,7 @@
 
 // import { useEffect, useRef } from 'react'
 // import { useSelector } from 'react-redux'
-// import * as THREE from 'three'
+// import * as TRecuriterEE from 'three'
 
 // /* ─────────────────────────────────────────────────────────────────────────────
 //    recruitEdge Background — Three.js
@@ -770,7 +770,7 @@
 //   grad.addColorStop(1,   'rgba(255,255,255,0)')
 //   ctx.fillStyle = grad
 //   ctx.fillRect(0, 0, size, size)
-//   return new THREE.CanvasTexture(canvas)
+//   return new TRecuriterEE.CanvasTexture(canvas)
 // }
 
 // // Glowing ring texture
@@ -787,7 +787,7 @@
 //   grad.addColorStop(1,   'rgba(255,255,255,0)')
 //   ctx.fillStyle = grad
 //   ctx.fillRect(0, 0, size, size)
-//   return new THREE.CanvasTexture(canvas)
+//   return new TRecuriterEE.CanvasTexture(canvas)
 // }
 
 // // Soft square sprite texture (slightly rounded corners, glow edge)
@@ -816,7 +816,7 @@
 //   grad.addColorStop(1,   'rgba(255,255,255,0)')
 //   ctx.fillStyle = grad
 //   ctx.fill()
-//   return new THREE.CanvasTexture(canvas)
+//   return new TRecuriterEE.CanvasTexture(canvas)
 // }
 
 // const ThreeBackground = () => {
@@ -830,11 +830,11 @@
 
 //     // ── Renderer ──────────────────────────────────────────────────────────
 //     const W = mount.clientWidth, H = mount.clientHeight
-//     const scene = new THREE.Scene()
-//     const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 500)
+//     const scene = new TRecuriterEE.Scene()
+//     const camera = new TRecuriterEE.PerspectiveCamera(55, W / H, 0.1, 500)
 //     camera.position.set(0, 0, 50)
 
-//     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+//     const renderer = new TRecuriterEE.WebGLRenderer({ antialias: true, alpha: true })
 //     renderer.setSize(W, H)
 //     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 //     renderer.setClearColor(0x000000, 0)
@@ -849,11 +849,11 @@
 //       ? ['#6366f1','#8b5cf6','#0ea5e9','#a78bfa','#6366f1','#38bdf8']
 //       : ['#6366f1','#8b5cf6','#22d3ee','#a78bfa','#818cf8','#38bdf8']
 
-//     const threeColors = COLORS.map(c => new THREE.Color(c))
+//     const threeColors = COLORS.map(c => new TRecuriterEE.Color(c))
 //     const pickColor = () => threeColors[Math.floor(Math.random() * threeColors.length)]
 
 //     // ── Shared ShaderMaterial factory ─────────────────────────────────────
-//     const makeShaderMat = (tex, opacity) => new THREE.ShaderMaterial({
+//     const makeShaderMat = (tex, opacity) => new TRecuriterEE.ShaderMaterial({
 //       uniforms: { uTex: { value: tex }, uOpacity: { value: opacity } },
 //       vertexShader: `
 //         attribute float size;
@@ -876,7 +876,7 @@
 //         }
 //       `,
 //       transparent: true,
-//       blending: THREE.AdditiveBlending,
+//       blending: TRecuriterEE.AdditiveBlending,
 //       depthWrite: false,
 //     })
 
@@ -905,12 +905,12 @@
 //       })
 //     }
 
-//     const bigGeo = new THREE.BufferGeometry()
-//     bigGeo.setAttribute('position', new THREE.BufferAttribute(bigPos, 3))
-//     bigGeo.setAttribute('color',    new THREE.BufferAttribute(bigCol, 3))
-//     bigGeo.setAttribute('size',     new THREE.BufferAttribute(bigSizes, 1))
+//     const bigGeo = new TRecuriterEE.BufferGeometry()
+//     bigGeo.setAttribute('position', new TRecuriterEE.BufferAttribute(bigPos, 3))
+//     bigGeo.setAttribute('color',    new TRecuriterEE.BufferAttribute(bigCol, 3))
+//     bigGeo.setAttribute('size',     new TRecuriterEE.BufferAttribute(bigSizes, 1))
 //     const bigMat = makeShaderMat(circleTex, isLight ? 0.28 : 0.45)
-//     scene.add(new THREE.Points(bigGeo, bigMat))
+//     scene.add(new TRecuriterEE.Points(bigGeo, bigMat))
 
 //     // ── 2. Circle particles — SMALL ones (40 total) ───────────────────────
 //     const SMALL_COUNT = 40
@@ -937,12 +937,12 @@
 //       })
 //     }
 
-//     const smGeo = new THREE.BufferGeometry()
-//     smGeo.setAttribute('position', new THREE.BufferAttribute(smPos, 3))
-//     smGeo.setAttribute('color',    new THREE.BufferAttribute(smCol, 3))
-//     smGeo.setAttribute('size',     new THREE.BufferAttribute(smSizes, 1))
+//     const smGeo = new TRecuriterEE.BufferGeometry()
+//     smGeo.setAttribute('position', new TRecuriterEE.BufferAttribute(smPos, 3))
+//     smGeo.setAttribute('color',    new TRecuriterEE.BufferAttribute(smCol, 3))
+//     smGeo.setAttribute('size',     new TRecuriterEE.BufferAttribute(smSizes, 1))
 //     const smMat = makeShaderMat(circleTex, isLight ? 0.50 : 0.75)
-//     scene.add(new THREE.Points(smGeo, smMat))
+//     scene.add(new TRecuriterEE.Points(smGeo, smMat))
 
 //     // ── 3. Square particles (25 total, mixed sizes) ───────────────────────
 //     const SQ_COUNT = 25
@@ -972,12 +972,12 @@
 //       })
 //     }
 
-//     const sqGeo = new THREE.BufferGeometry()
-//     sqGeo.setAttribute('position', new THREE.BufferAttribute(sqPos, 3))
-//     sqGeo.setAttribute('color',    new THREE.BufferAttribute(sqCol, 3))
-//     sqGeo.setAttribute('size',     new THREE.BufferAttribute(sqSizes, 1))
+//     const sqGeo = new TRecuriterEE.BufferGeometry()
+//     sqGeo.setAttribute('position', new TRecuriterEE.BufferAttribute(sqPos, 3))
+//     sqGeo.setAttribute('color',    new TRecuriterEE.BufferAttribute(sqCol, 3))
+//     sqGeo.setAttribute('size',     new TRecuriterEE.BufferAttribute(sqSizes, 1))
 //     const sqMat = makeShaderMat(squareTex, isLight ? 0.30 : 0.50)
-//     scene.add(new THREE.Points(sqGeo, sqMat))
+//     scene.add(new TRecuriterEE.Points(sqGeo, sqMat))
 
 //     // ── 4. Floating glowing ring circles ──────────────────────────────────
 //     const RINGS = [
@@ -989,15 +989,15 @@
 //     ]
 
 //     const ringMeshes = RINGS.map(r => {
-//       const mat = new THREE.SpriteMaterial({
+//       const mat = new TRecuriterEE.SpriteMaterial({
 //         map: ringTex,
-//         color: new THREE.Color(r.color),
+//         color: new TRecuriterEE.Color(r.color),
 //         transparent: true,
 //         opacity: r.opacity,
-//         blending: THREE.AdditiveBlending,
+//         blending: TRecuriterEE.AdditiveBlending,
 //         depthWrite: false,
 //       })
-//       const sprite = new THREE.Sprite(mat)
+//       const sprite = new TRecuriterEE.Sprite(mat)
 //       sprite.position.set(r.x, r.y, r.z)
 //       sprite.scale.set(r.scale * 2, r.scale * 2, 1)
 //       sprite.userData = {
@@ -1027,13 +1027,13 @@
 //     const MAX_LINE_DIST = 22
 //     const maxAmbientLines = NODE_COUNT * NODE_COUNT
 //     const ambientLinePos = new Float32Array(maxAmbientLines * 6)
-//     const ambientGeo = new THREE.BufferGeometry()
-//     ambientGeo.setAttribute('position', new THREE.BufferAttribute(ambientLinePos, 3))
-//     const ambientMat = new THREE.LineBasicMaterial({
+//     const ambientGeo = new TRecuriterEE.BufferGeometry()
+//     ambientGeo.setAttribute('position', new TRecuriterEE.BufferAttribute(ambientLinePos, 3))
+//     const ambientMat = new TRecuriterEE.LineBasicMaterial({
 //       color: 0x6366f1, transparent: true,
 //       opacity: isLight ? 0.06 : 0.10,
 //     })
-//     scene.add(new THREE.LineSegments(ambientGeo, ambientMat))
+//     scene.add(new TRecuriterEE.LineSegments(ambientGeo, ambientMat))
 
 //     // ── 6. SMALL dense line network (many short connections) ──────────────
 //     const DENSE_COUNT = 60
@@ -1048,13 +1048,13 @@
 //     const DENSE_DIST = 11  // short range → tight clusters
 //     const maxDenseLines = DENSE_COUNT * DENSE_COUNT
 //     const denseLinePos = new Float32Array(maxDenseLines * 6)
-//     const denseGeo = new THREE.BufferGeometry()
-//     denseGeo.setAttribute('position', new THREE.BufferAttribute(denseLinePos, 3))
-//     const denseMat = new THREE.LineBasicMaterial({
+//     const denseGeo = new TRecuriterEE.BufferGeometry()
+//     denseGeo.setAttribute('position', new TRecuriterEE.BufferAttribute(denseLinePos, 3))
+//     const denseMat = new TRecuriterEE.LineBasicMaterial({
 //       color: 0xa78bfa, transparent: true,
 //       opacity: isLight ? 0.09 : 0.16,
 //     })
-//     scene.add(new THREE.LineSegments(denseGeo, denseMat))
+//     scene.add(new TRecuriterEE.LineSegments(denseGeo, denseMat))
 
 //     // ── 7. Large ambient circle halos (background depth) ──────────────────
 //     const HALOS = [
@@ -1063,15 +1063,15 @@
 //       { x:-15,  y: 12, z: -22, scale: 22, color: '#22d3ee', opacity: isLight ? 0.015 : 0.035 },
 //     ]
 //     HALOS.forEach(h => {
-//       const mat = new THREE.SpriteMaterial({
+//       const mat = new TRecuriterEE.SpriteMaterial({
 //         map: circleTex,
-//         color: new THREE.Color(h.color),
+//         color: new TRecuriterEE.Color(h.color),
 //         transparent: true,
 //         opacity: h.opacity,
-//         blending: THREE.AdditiveBlending,
+//         blending: TRecuriterEE.AdditiveBlending,
 //         depthWrite: false,
 //       })
-//       const sprite = new THREE.Sprite(mat)
+//       const sprite = new TRecuriterEE.Sprite(mat)
 //       sprite.position.set(h.x, h.y, h.z)
 //       sprite.scale.set(h.scale * 2, h.scale * 2, 1)
 //       scene.add(sprite)
@@ -1096,7 +1096,7 @@
 //     window.addEventListener('resize', onResize)
 
 //     // ── Animation loop ────────────────────────────────────────────────────
-//     const clock = new THREE.Clock()
+//     const clock = new TRecuriterEE.Clock()
 //     let cx = 0, cy = 0, raf
 
 //     // Helper: rebuild line segments from a node array into a Float32Array
@@ -1214,7 +1214,7 @@
 // export default ThreeBackground
 import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import * as THREE from 'three'
+import * as TRecuriterEE from 'three'
 
 /* ─────────────────────────────────────────────────────────────────────────────
    recruitEdge Background — Three.js  (Day / Night aware)
@@ -1235,7 +1235,7 @@ function makeCircleTexture(size = 128) {
   g.addColorStop(1,   'rgba(255,255,255,0)')
   ctx.fillStyle = g
   ctx.fillRect(0, 0, size, size)
-  return new THREE.CanvasTexture(c)
+  return new TRecuriterEE.CanvasTexture(c)
 }
 
 function makeRingTexture(size = 256) {
@@ -1249,7 +1249,7 @@ function makeRingTexture(size = 256) {
   g.addColorStop(1,    'rgba(255,255,255,0)')
   ctx.fillStyle = g
   ctx.fillRect(0, 0, size, size)
-  return new THREE.CanvasTexture(c)
+  return new TRecuriterEE.CanvasTexture(c)
 }
 
 function makeSquareTexture(size = 128) {
@@ -1275,12 +1275,12 @@ function makeSquareTexture(size = 128) {
   g.addColorStop(1,   'rgba(255,255,255,0)')
   ctx.fillStyle = g
   ctx.fill()
-  return new THREE.CanvasTexture(c)
+  return new TRecuriterEE.CanvasTexture(c)
 }
 
 // ── Shader material (per-vertex size + color, blending passed in) ────────────
 function makeShaderMat(tex, opacity, blending) {
-  return new THREE.ShaderMaterial({
+  return new TRecuriterEE.ShaderMaterial({
     uniforms: {
       uTex:     { value: tex },
       uOpacity: { value: opacity },
@@ -1314,7 +1314,7 @@ function makeShaderMat(tex, opacity, blending) {
 // ── Theme config ──────────────────────────────────────────────────────────────
 const THEME = {
   dark: {
-    blending:     THREE.AdditiveBlending,
+    blending:     TRecuriterEE.AdditiveBlending,
     // particles
     bigOpacity:   0.55,
     smallOpacity: 0.80,
@@ -1331,7 +1331,7 @@ const THEME = {
     haloOpacities:[0.06, 0.05, 0.04],
   },
   light: {
-    blending:     THREE.NormalBlending,   // ← KEY: normal blending so color shows on white
+    blending:     TRecuriterEE.NormalBlending,   // ← KEY: normal blending so color shows on white
     // particles — rich saturated colors, solid enough to read on white bg
     bigOpacity:   0.55,
     smallOpacity: 0.70,
@@ -1362,11 +1362,11 @@ const ThreeBackground = () => {
     if (!mount) return
 
     const W = mount.clientWidth, H = mount.clientHeight
-    const scene  = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 500)
+    const scene  = new TRecuriterEE.Scene()
+    const camera = new TRecuriterEE.PerspectiveCamera(55, W / H, 0.1, 500)
     camera.position.set(0, 0, 50)
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    const renderer = new TRecuriterEE.WebGLRenderer({ antialias: true, alpha: true })
     renderer.setSize(W, H)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.setClearColor(0x000000, 0)
@@ -1377,7 +1377,7 @@ const ThreeBackground = () => {
     const ringTex   = makeRingTexture(256)
     const squareTex = makeSquareTexture(128)
 
-    const threeColors = T.colors.map(c => new THREE.Color(c))
+    const threeColors = T.colors.map(c => new TRecuriterEE.Color(c))
     const pickColor   = () => threeColors[Math.floor(Math.random() * threeColors.length)]
 
     // ── Particle builder ──────────────────────────────────────────────────
@@ -1404,11 +1404,11 @@ const ThreeBackground = () => {
         })
       }
 
-      const geo = new THREE.BufferGeometry()
-      geo.setAttribute('position', new THREE.BufferAttribute(pos,   3))
-      geo.setAttribute('color',    new THREE.BufferAttribute(col,   3))
-      geo.setAttribute('size',     new THREE.BufferAttribute(sizes, 1))
-      scene.add(new THREE.Points(geo, makeShaderMat(tex, opacity, T.blending)))
+      const geo = new TRecuriterEE.BufferGeometry()
+      geo.setAttribute('position', new TRecuriterEE.BufferAttribute(pos,   3))
+      geo.setAttribute('color',    new TRecuriterEE.BufferAttribute(col,   3))
+      geo.setAttribute('size',     new TRecuriterEE.BufferAttribute(sizes, 1))
+      scene.add(new TRecuriterEE.Points(geo, makeShaderMat(tex, opacity, T.blending)))
       return { geo, pos, drift, count }
     }
 
@@ -1430,15 +1430,15 @@ const ThreeBackground = () => {
 
     const ringMeshes = RING_DEFS.map((r, i) => {
       const opacity = T.ringOpacities[i]
-      const mat = new THREE.SpriteMaterial({
+      const mat = new TRecuriterEE.SpriteMaterial({
         map: ringTex,
-        color: new THREE.Color(T.ringColors[i]),
+        color: new TRecuriterEE.Color(T.ringColors[i]),
         transparent: true,
         opacity,
-        blending: isLight ? THREE.NormalBlending : THREE.AdditiveBlending,
+        blending: isLight ? TRecuriterEE.NormalBlending : TRecuriterEE.AdditiveBlending,
         depthWrite: false,
       })
-      const sprite = new THREE.Sprite(mat)
+      const sprite = new TRecuriterEE.Sprite(mat)
       sprite.position.set(r.x, r.y, r.z)
       sprite.scale.set(r.scale * 2, r.scale * 2, 1)
       sprite.userData = {
@@ -1465,10 +1465,10 @@ const ThreeBackground = () => {
         vy: (Math.random() - 0.5) * speed * 0.7,
       }))
       const buf = new Float32Array(nodeCount * nodeCount * 6)
-      const geo = new THREE.BufferGeometry()
-      geo.setAttribute('position', new THREE.BufferAttribute(buf, 3))
-      const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity })
-      scene.add(new THREE.LineSegments(geo, mat))
+      const geo = new TRecuriterEE.BufferGeometry()
+      geo.setAttribute('position', new TRecuriterEE.BufferAttribute(buf, 3))
+      const mat = new TRecuriterEE.LineBasicMaterial({ color, transparent: true, opacity })
+      scene.add(new TRecuriterEE.LineSegments(geo, mat))
       return { nodes, buf, geo, maxDist, hx: spreadX / 2, hy: spreadY / 2 }
     }
 
@@ -1484,15 +1484,15 @@ const ThreeBackground = () => {
       { x:-15, y: 12, z:-22, scale:22 },
     ]
     HALO_DEFS.forEach((h, i) => {
-      const mat = new THREE.SpriteMaterial({
+      const mat = new TRecuriterEE.SpriteMaterial({
         map: circleTex,
-        color: new THREE.Color(T.haloColors[i % T.haloColors.length]),
+        color: new TRecuriterEE.Color(T.haloColors[i % T.haloColors.length]),
         transparent: true,
         opacity: T.haloOpacities[i],
-        blending: isLight ? THREE.NormalBlending : THREE.AdditiveBlending,
+        blending: isLight ? TRecuriterEE.NormalBlending : TRecuriterEE.AdditiveBlending,
         depthWrite: false,
       })
-      const sprite = new THREE.Sprite(mat)
+      const sprite = new TRecuriterEE.Sprite(mat)
       sprite.position.set(h.x, h.y, h.z)
       sprite.scale.set(h.scale * 2, h.scale * 2, 1)
       scene.add(sprite)
@@ -1552,7 +1552,7 @@ const ThreeBackground = () => {
     }
 
     // ── Animation loop ────────────────────────────────────────────────────
-    const clock = new THREE.Clock()
+    const clock = new TRecuriterEE.Clock()
     let cx = 0, cy = 0, raf
 
     const animate = () => {

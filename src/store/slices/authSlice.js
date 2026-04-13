@@ -4,7 +4,7 @@ import api from '../../services/api'
 // Mock users for demo (replace with real API calls)
 const MOCK_USERS = [
   { id: '1', name: 'Alex Admin', email: 'admin@recruitEdge.com', password: 'admin123', role: 'ADMIN' },
-  { id: '2', name: 'HR Manager', email: 'hr@recruitEdge.com', password: 'hr123', role: 'HR' },
+  { id: '2', name: 'Recuriter Manager', email: 'hr@recruitEdge.com', password: 'hr123', role: 'Recuriter' },
   { id: '3', name: 'John Candidate', email: 'candidate@recruitEdge.com', password: 'cand123', role: 'CANDIDATE' },
 ]
 
@@ -82,7 +82,7 @@ const authSlice = createSlice({
       state.error = null
     },
     setCredentials(state, action) {
-      state.user = action.payload.user
+      state.user = action.payload.userD
       state.token = action.payload.token
       state.isAuthenticated = true
     },
@@ -92,7 +92,7 @@ const authSlice = createSlice({
     const handleFulfilled = (state, action) => {
       state.loading = false
       state.token = action.payload.token
-      state.user = action.payload.user
+      state.user = action.payload.userD
       state.isAuthenticated = true
     }
     const handleRejected = (state, action) => {
