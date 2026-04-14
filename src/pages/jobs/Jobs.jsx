@@ -125,7 +125,7 @@ const Jobs = () => {
 
 
   useEffect(() => {
-    dispatch(fetchJobs({ page: currentPage , size: pageSize }))
+    dispatch(fetchJobs({ page: currentPage , size: pageSize, createdBy:user.id }))
   }, [currentPage, pageSize])  
 
   useEffect(() => { dispatch(fetchJobType())  } ,[])
@@ -140,7 +140,7 @@ const Jobs = () => {
 
   const handleSearchChange = e => {
     setSearch(e.target.value)
-    dispatch(fetchJobs({ page: 1 , size: 5, search:e.target.value }))
+    dispatch(fetchJobs({ page: 1 , size: 5, search:e.target.value, createdBy:user.id }))
     setCurrentPage(1)    
     setPageSize(5)
   }
@@ -155,7 +155,7 @@ const Jobs = () => {
     console.log(editItem)
     if (editItem!=null) await dispatch(updateJob({ id: editItem.id, data: form }))
     else          await dispatch(createJob({...form, createdBy:user.id}))
-    dispatch(fetchJobs({ page:1,  size: 5 }))
+    dispatch(fetchJobs({ page:1,  size: 5, createdBy:user.id }))
   }
 
   const handleDelete = async id => {
@@ -167,7 +167,7 @@ const Jobs = () => {
      }
     setDeleteId(null)
   
-    dispatch(fetchJobs({ page: 1, size: 5 }))
+    dispatch(fetchJobs({ page: 1, size: 5, createdBy:user.id }))
     setCurrentPage(1)
     setPageSize(5)
   }
