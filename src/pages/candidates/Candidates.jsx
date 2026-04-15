@@ -2,18 +2,24 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchCandidates, createCandidate, updateCandidate, deleteCandidate } from '../../store/slices/candidateSlice'
 import { fetchJobs } from '../../store/slices/jobSlice'
+import { fetchUsersByRole } from '../../store/slices/userSlice'
+import Pagination from '../Pagination'
 
 const STATUSES = ['APPLIED', 'SHORTLISTED', 'INTERVIEW_SCHEDULED', 'HIRED', 'REJECTED']
 const EMPTY = { userName: '', userId: '', jobId: '', jobTitle: '', resumeUrl: '', status: 'APPLIED' }
 const statusBadge = { APPLIED: 'badge-blue', SHORTLISTED: 'badge-cyan', INTERVIEW_SCHEDULED: 'badge-purple', HIRED: 'badge-green', REJECTED: 'badge-red' }
 
-const CandidateModal = ({ initial, jobs, onClose, onSave }) => {
+const CandidateModal = ({ initial, jobs, onClose, onSave, users }) => {
   const [form, setForm] = useState(initial || EMPTY)
   const [saving, setSaving] = useState(false)
   const set = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
   const handleJobChange = (e) => {
     const job = jobs.find(j => j.id === e.target.value)
     setForm(p => ({ ...p, jobId: e.target.value, jobTitle: job?.jobTitle || '' }))
+  }
+  const handleCandidateChange = (e) => {
+    const user = jobs.find(j => j.id === e.target.value)
+    setForm(p => ({ ...p, userId: e.target.value, userName: user?.userName || '' }))
   }
   const handleSubmit = async (e) => {
     e.preventDefault(); setSaving(true)
@@ -27,21 +33,18 @@ const CandidateModal = ({ initial, jobs, onClose, onSave }) => {
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 20 }}>✕</button>
         </div>
         <form onSubmit={handleSubmit}>
-          <div className="grid-2">
-            <div className="form-group">
-              <label className="form-label">Candidate Name</label>
-              <input name="userName" className="form-control" value={form.userName} onChange={set} placeholder="Full name" required />
-            </div>
-            <div className="form-group">
-              <label className="form-label">User ID</label>
-              <input name="userId" className="form-control" value={form.userId} onChange={set} placeholder="User ID" required />
-            </div>
+          <div className="form-group">
+            <label className="form-label">Candidate</label>
+            <select className="form-control" value={form.userId} onChange={handleCandidateChange} required>
+              <option value="">Select candidate...</option>
+              {users?.map(j => <option key={j.id} value={j.id}>{j.name}</option>)}
+            </select>
           </div>
           <div className="form-group">
             <label className="form-label">Applied For</label>
             <select className="form-control" value={form.jobId} onChange={handleJobChange} required>
               <option value="">Select job...</option>
-              {jobs.map(j => <option key={j.id} value={j.id}>{j.jobTitle}</option>)}
+              {jobs?.map(j => <option key={j.id} value={j.id}>{j.jobTitle}</option>)}
             </select>
           </div>
           <div className="form-group">
@@ -66,27 +69,45 @@ const CandidateModal = ({ initial, jobs, onClose, onSave }) => {
   )
 }
 
+
+
 const Candidates = () => {
   const dispatch = useDispatch()
-  const { items, loading } = useSelector(s => s.candidates)
+  const  {user} = useSelector(s => s.auth)
+  const { items, totalElements, totalPages, loading } = useSelector(s => s.candidates)
+  const { usersByRole } = useSelector(s => s.users)
   const { items: jobs } = useSelector(s => s.jobs)
   const [modal, setModal] = useState(null)
   const [editItem, setEditItem] = useState(null)
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState('ALL')
   const [deleteId, setDeleteId] = useState(null)
+  const [currentPage,  setCurrentPage]  = useState(1)
+  const [pageSize,     setPageSize]     = useState(5)
 
-  useEffect(() => { dispatch(fetchCandidates()); dispatch(fetchJobs()) }, [])
+  useEffect(() => { dispatch(fetchJobs({page:0, size:10, createdBy:user.id})); dispatch(fetchUsersByRole({role:"CANDIDATE"})) }, [])
 
-  const filtered = items.filter(c => {
-    const match = c.userName?.toLowerCase().includes(search.toLowerCase()) || c.jobTitle?.toLowerCase().includes(search.toLowerCase())
-    const statusMatch = filterStatus === 'ALL' || c.status === filterStatus
-    return match && statusMatch
-  })
-
+  useEffect(() => { dispatch(fetchCandidates({page:currentPage,size:pageSize, jobCreatedBy:user.id })); }, [currentPage, pageSize])
+  const handlePageChange = p => setCurrentPage(p)   // ← no clamping, Pagination only emits valid pages
+  const handlePageSizeChange = n => {
+    setPageSize(n)
+    setCurrentPage(1)           // triggers the effect above with new size
+  }
+  const handleSearchChange = (value) => {
+    setSearch(value)
+    dispatch(fetchCandidates({ page: 1 , size: 5, search:value, createdBy:user.id }))
+    setCurrentPage(1)    
+    setPageSize(5)
+  }
+  const from = totalElements === 0 ? 0 : (currentPage - 1) * pageSize + 1
+  const to   = Math.min(currentPage * pageSize, totalElements)
+ 
   const handleSave = async (form) => {
     if (editItem) await dispatch(updateCandidate({ id: editItem.id, data: form }))
     else await dispatch(createCandidate(form))
+    dispatch(fetchCandidates({page:1, size:5 }))
+    setPageSize(5)
+    setCurrentPage(1)
   }
 
   return (
@@ -94,7 +115,7 @@ const Candidates = () => {
       <div className="page-header">
         <div>
           <div className="page-title">Candidates</div>
-          <div className="page-subtitle">{items.length} total · {items.filter(c => c.status === 'HIRED').length} hired</div>
+          <div className="page-subtitle">{items?.length} total · {items?.filter(c => c.status === 'HIRED')?.length} hired</div>
         </div>
         <button className="btn btn-primary" onClick={() => { setEditItem(null); setModal('create') }}>+ Add Candidate</button>
       </div>
@@ -102,7 +123,7 @@ const Candidates = () => {
       <div className="filter-bar">
         <div className="search-input-wrap">
           <span className="search-icon">🔍</span>
-          <input className="form-control search-input" placeholder="Search candidates..." value={search} onChange={e => setSearch(e.target.value)} />
+          <input className="form-control search-input" placeholder="Search candidates..." value={search} onChange={(e) => handleSearchChange(e.target.value)} />
         </div>
         <select className="form-control" style={{ width: 190 }} value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
           <option value="ALL">All Status</option>
@@ -113,22 +134,23 @@ const Candidates = () => {
       <div className="glass-card" style={{ overflow: 'hidden' }}>
         {loading ? (
           <div style={{ padding: 60, textAlign: 'center' }}><span className="spinner" /></div>
-        ) : filtered.length === 0 ? (
+        ) : items?.length === 0 ? (
           <div className="empty-state"><div className="empty-state-icon">👤</div><div className="empty-state-text">No candidates found</div></div>
         ) : (
+          <>
           <div style={{ overflowX:"auto" }}><table className="data-table">
             <thead>
               <tr><th>Candidate</th><th>Job Applied</th><th>Resume</th><th>Applied On</th><th>Status</th><th>Actions</th></tr>
             </thead>
             <tbody>
-              {filtered.map(c => (
+              {items?.map(c => (
                 <tr key={c.id}>
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', flexShrink: 0 }}>
-                        {c.userName?.charAt(0)}
+                        {c.name?.charAt(0)}
                       </div>
-                      <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{c.userName}</span>
+                      <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{c.name}</span>
                     </div>
                   </td>
                   <td>{c.jobTitle}</td>
@@ -149,11 +171,23 @@ const Candidates = () => {
               ))}
             </tbody>
           </table></div>
+          
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+            totalElements={totalElements}
+            from={from}
+            to={to}
+          />
+          </>  
         )}
       </div>
 
       {(modal === 'create' || modal === 'edit') && (
-        <CandidateModal initial={modal === 'edit' ? editItem : null} jobs={jobs} onClose={() => setModal(null)} onSave={handleSave} />
+        <CandidateModal initial={modal === 'edit' ? editItem : null} jobs={jobs} onClose={() => setModal(null)} onSave={handleSave} users={usersByRole} />
       )}
 
       {deleteId && (
@@ -163,7 +197,8 @@ const Candidates = () => {
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>Remove Candidate?</h3>
             <p style={{ color: 'var(--text-secondary)', marginBottom: 24, fontSize: 14 }}>This will permanently remove the candidate record.</p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <button className="btn btn-danger" onClick={() => { dispatch(deleteCandidate(deleteId)); setDeleteId(null) }}>Remove</button>
+              <button className="btn btn-danger" onClick={() => { dispatch(deleteCandidate(deleteId)); setDeleteId(null); dispatch(fetchCandidates({page:1, size:5}));
+               setPageSize(5); setCurrentPage(1) }}>Remove</button>
               <button className="btn btn-secondary" onClick={() => setDeleteId(null)}>Cancel</button>
             </div>
           </div>

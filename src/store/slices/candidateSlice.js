@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import api from '../../services/api'
 
 // Seed data - these are Recuriter-managed entries (not user-applied)
 let mockCandidates = [
@@ -9,26 +10,20 @@ let mockCandidates = [
   { id: '5', userName: 'Vikram Singh', userId: 'u5', jobId: '2', jobTitle: 'Backend Java Engineer',  resumeUrl: 'https://drive.google.com/file/sample5', status: 'APPLIED',     createdAt: '2024-01-19T08:45:00' },
 ]
 
-// Load persisted applications from localStorage
-const loadPersistedApps = () => {
-  try { return JSON.parse(localStorage.getItem('rx_applications') || '[]') } catch { return [] }
-}
-const saveApps = (apps) => {
-  try { localStorage.setItem('rx_applications', JSON.stringify(apps)) } catch {}
-}
 
-export const fetchCandidates = createAsyncThunk('candidates/fetchAll', async () => {
-  await new Promise(r => setTimeout(r, 300))
-  const persisted = loadPersistedApps()
-  return [...mockCandidates, ...persisted]
+export const fetchCandidates = createAsyncThunk('candidates/fetchAll', async ({ page=1, size=5, search, jobCreatedBy}) => {
+  await new Promise(r => setTimeout(r, 400))
+  console.log("log")
+  const res =  await api.get("/candidate/get",{params:{ page, size, search, jobCreatedBy}})
+  return res.data;
 })
 
 // Called by Recuriter to manually add a candidate entry
 export const createCandidate = createAsyncThunk('candidates/create', async (data) => {
   await new Promise(r => setTimeout(r, 400))
-  const entry = { ...data, id: String(Date.now()), createdAt: new Date().toISOString() }
-  mockCandidates.push(entry)
-  return entry
+  const res = await api.post("/candidate/create",{...data, createdAt: new Date().toISOString() })
+
+  return res.data
 })
 
 // Called by a logged-in candidate applying for a job
@@ -49,38 +44,34 @@ export const applyForJob = createAsyncThunk('candidates/applyForJob', async ({ j
     createdAt: new Date().toISOString(),
     selfApplied: true,
   }
-  // Persist to localStorage
-  const existing = loadPersistedApps()
-  saveApps([...existing, entry])
-  return entry
+ 
 })
 
 export const updateCandidate = createAsyncThunk('candidates/update', async ({ id, data }) => {
   await new Promise(r => setTimeout(r, 400))
-  mockCandidates = mockCandidates.map(c => c.id === id ? { ...c, ...data } : c)
-  // Also update in persisted store
-  const persisted = loadPersistedApps()
-  const updatedPersisted = persisted.map(c => c.id === id ? { ...c, ...data } : c)
-  saveApps(updatedPersisted)
-  return { id, ...data }
+  const res = await api.put(`/candidate/update/${id}`,data)
+  return res.data;
 })
 
 export const deleteCandidate = createAsyncThunk('candidates/delete', async (id) => {
   await new Promise(r => setTimeout(r, 300))
-  mockCandidates = mockCandidates.filter(c => c.id !== id)
-  const persisted = loadPersistedApps().filter(c => c.id !== id)
-  saveApps(persisted)
-  return id
+  const res = await api.delete(`/candidate/delete/${id}`)
+  return res.data;
 })
 
 const candidateSlice = createSlice({
   name: 'candidates',
-  initialState: { items: [], loading: false, error: null, applyLoading: false },
+  initialState: { items: [], totalElements: 0, totalPages: 0, loading: false, error: null, applyLoading: false },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchCandidates.pending, s => { s.loading = true })
-      .addCase(fetchCandidates.fulfilled, (s, a) => { s.loading = false; s.items = a.payload })
+      .addCase(fetchCandidates.fulfilled, (s, a) => { 
+        s.loading      = false
+        s.items        = a.payload.data       
+        s.totalElements = a.payload.totalElements
+        s.totalPages   = a.payload.totalPages
+      })
       .addCase(fetchCandidates.rejected, s => { s.loading = false })
       .addCase(createCandidate.fulfilled, (s, a) => { s.items.push(a.payload) })
       .addCase(applyForJob.pending, s => { s.applyLoading = true })

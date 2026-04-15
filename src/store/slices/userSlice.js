@@ -1,4 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import api from '../../services/api'
+
 
 let mockUsers = [
   { id: '1', name: 'Alex Admin', email: 'admin@recruitEdge.com', role: 'ADMIN' },
@@ -11,6 +13,12 @@ let mockUsers = [
 export const fetchUsers = createAsyncThunk('users/fetchAll', async () => {
   await new Promise(r => setTimeout(r, 400))
   return [...mockUsers]
+})
+
+export const fetchUsersByRole = createAsyncThunk('user/byRole',async({role})=>{
+  await new Promise(r => setTimeout(r, 400))
+  const res = await api.get('/user/byRole', { params : {role } })
+  return res.data
 })
 
 export const createUser = createAsyncThunk('users/create', async (data) => {
@@ -34,7 +42,7 @@ export const deleteUser = createAsyncThunk('users/delete', async (id) => {
 
 const userSlice = createSlice({
   name: 'users',
-  initialState: { items: [], loading: false, error: null },
+  initialState: { items: [], loading: false, error: null, usersByRole:[] },
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -49,6 +57,7 @@ const userSlice = createSlice({
       .addCase(deleteUser.fulfilled, (s, a) => {
         s.items = s.items.filter(u => u.id !== a.payload)
       })
+      .addCase(fetchUsersByRole.fulfilled, (s, a) => { s.usersByRole = a.payload })
   },
 })
 
