@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchInterviews, createInterview, updateInterview, deleteInterview } from '../../store/slices/interviewSlice'
 import { fetchCandidates } from '../../store/slices/candidateSlice'
-import Pagination from '../Pagination'
 import { toast } from 'react-toastify'
+import Pagination from '../../components/Pagination'
 
 const STATUSES = ['SCHEDULED', 'COMPLETED', 'CANCELLED']
 const MODES = ['VIDEO', 'IN_PERSON', 'PHONE']

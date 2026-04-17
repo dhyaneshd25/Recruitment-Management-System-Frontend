@@ -2,7 +2,8 @@ import { useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from "react-toastify";
 import { fetchJobs, createJob, updateJob, deleteJob, fetchJobType } from '../../store/slices/jobSlice'
-import Pagination from '../Pagination';
+import Pagination from '../../components/Pagination';
+
 
 const EMPTY = { jobTitle:'', description:'', location:'', experience:'', salaryRange:'', status:'Open' }
 const SB    = { Open:'badge-green', Closed:'badge-red', Draft:'badge-amber' }

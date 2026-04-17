@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchCandidates, createCandidate, updateCandidate, deleteCandidate } from '../../store/slices/candidateSlice'
 import { fetchJobs } from '../../store/slices/jobSlice'
 import { fetchUsersByRole } from '../../store/slices/userSlice'
-import Pagination from '../Pagination'
+import Pagination from '../../components/Pagination'
 import { toast } from 'react-toastify'
 
 const STATUSES = ['APPLIED','SCREENING', 'INTERVIEW', 'SELECTED', 'REJECTED']
