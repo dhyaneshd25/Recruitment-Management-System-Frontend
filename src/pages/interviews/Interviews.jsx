@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchInterviews, createInterview, updateInterview, deleteInterview } from '../../store/slices/interviewSlice'
 import { fetchCandidates } from '../../store/slices/candidateSlice'
 import Pagination from '../Pagination'
+import { toast } from 'react-toastify'
 
 const STATUSES = ['SCHEDULED', 'COMPLETED', 'CANCELLED']
 const MODES = ['VIDEO', 'IN_PERSON', 'PHONE']
@@ -40,7 +41,7 @@ const InterviewModal = ({ initial, candidates, onClose, onSave, user }) => {
             <label className="form-label">Candidate</label>
             <select className="form-control" value={form.candidateId} onChange={handleCandidateChange} required>
               <option value="">Select candidate...</option>
-              {candidates.map(c => <option key={c.id} value={c.id}>{c.userName} — {c.jobTitle}</option>)}
+              {candidates.map(c => <option key={c.id} value={c.id}>{c.name} — {c.jobTitle}</option>)}
             </select>
           </div>
           {/* <div className="grid-2">
@@ -136,7 +137,21 @@ const Interviews = () => {
     dispatch(fetchInterviews({ page: 1 , size: 5, search:value, candidateCreatedBy:user.id }))
     setCurrentPage(1)    
     setPageSize(5)
-  }  
+  } 
+  const handleDelete = async id => {
+    const result = await dispatch(deleteInterview(id))
+     if (deleteInterview.fulfilled.match(result)){
+          toast.success("Interview Deleted sucessfully")
+     }else{
+          toast.error("Failed to delete the interview")
+     }
+    setDeleteId(null)
+  
+    dispatch(fetchInterviews({ page:1, size:5, candidateCreatedBy:user.id }))
+    setCurrentPage(1)
+    setPageSize(5)
+  }
+
   const from = totalElements === 0 ? 0 : (currentPage - 1) * pageSize + 1
   const to   = Math.min(currentPage * pageSize, totalElements)
  
@@ -155,10 +170,10 @@ const Interviews = () => {
           <span className="search-icon">🔍</span>
           <input className="form-control search-input" placeholder="Search interviews..." value={search} onChange={e => { setSearch(e.target.value); handleSearchChange(e.target.value) }} />
         </div>
-        <select className="form-control" style={{ width: 160 }} value={filterStatus} onChange={e => { setFilterStatus(e.target.value)}}>
+        {/* <select className="form-control" style={{ width: 160 }} value={filterStatus} onChange={e => { setFilterStatus(e.target.value)}}>
           <option value="ALL">All Status</option>
           {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
-        </select>
+        </select> */}
       </div>
 
       <div className="glass-card" style={{ overflow: 'hidden' }}>

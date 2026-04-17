@@ -4,10 +4,11 @@ import { fetchCandidates, createCandidate, updateCandidate, deleteCandidate } fr
 import { fetchJobs } from '../../store/slices/jobSlice'
 import { fetchUsersByRole } from '../../store/slices/userSlice'
 import Pagination from '../Pagination'
+import { toast } from 'react-toastify'
 
-const STATUSES = ['APPLIED', 'SHORTLISTED', 'INTERVIEW_SCHEDULED', 'HIRED', 'REJECTED']
+const STATUSES = ['APPLIED','SCREENING', 'INTERVIEW', 'SELECTED', 'REJECTED']
 const EMPTY = { userName: '', userId: '', jobId: '', jobTitle: '', resumeUrl: '', status: 'APPLIED' }
-const statusBadge = { APPLIED: 'badge-blue', SHORTLISTED: 'badge-cyan', INTERVIEW_SCHEDULED: 'badge-purple', HIRED: 'badge-green', REJECTED: 'badge-red' }
+const statusBadge = { APPLIED: 'badge-blue', SCREENING: 'badge-cyan', INTERVIEW: 'badge-purple', SELECTED: 'badge-green', REJECTED: 'badge-red' }
 
 const CandidateModal = ({ initial, jobs, onClose, onSave, users }) => {
   const [form, setForm] = useState(initial || EMPTY)
@@ -95,7 +96,7 @@ const Candidates = () => {
   }
   const handleSearchChange = (value) => {
     setSearch(value)
-    dispatch(fetchCandidates({ page: 1 , size: 5, search:value, createdBy:user.id }))
+    dispatch(fetchCandidates({ page: 1 , size: 5, search:value, jobCreatedBy:user.id }))
     setCurrentPage(1)    
     setPageSize(5)
   }
@@ -105,11 +106,23 @@ const Candidates = () => {
   const handleSave = async (form) => {
     if (editItem) await dispatch(updateCandidate({ id: editItem.id, data: form }))
     else await dispatch(createCandidate(form))
-    dispatch(fetchCandidates({page:1, size:5 }))
+    dispatch(fetchCandidates({page:1, size:5, jobCreatedBy:user.id }))
     setPageSize(5)
     setCurrentPage(1)
   }
-
+  const handleDelete = async id => {
+    const result = await dispatch(deleteCandidate(id))
+     if (deleteCandidate.fulfilled.match(result)){
+          toast.success("Candidate Deleted sucessfully")
+     }else{
+          toast.error("Failed to delete the candidate")
+     }
+    setDeleteId(null)
+  
+    dispatch(fetchCandidates({ page: 1, size: 5, jobCreatedBy:user.id }))
+    setCurrentPage(1)
+    setPageSize(5)
+  }
   return (
     <div>
       <div className="page-header">
@@ -125,10 +138,10 @@ const Candidates = () => {
           <span className="search-icon">🔍</span>
           <input className="form-control search-input" placeholder="Search candidates..." value={search} onChange={(e) => handleSearchChange(e.target.value)} />
         </div>
-        <select className="form-control" style={{ width: 190 }} value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+        {/* <select className="form-control" style={{ width: 190 }} value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
           <option value="ALL">All Status</option>
           {STATUSES.map(s => <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>)}
-        </select>
+        </select> */}
       </div>
 
       <div className="glass-card" style={{ overflow: 'hidden' }}>
@@ -197,8 +210,7 @@ const Candidates = () => {
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>Remove Candidate?</h3>
             <p style={{ color: 'var(--text-secondary)', marginBottom: 24, fontSize: 14 }}>This will permanently remove the candidate record.</p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <button className="btn btn-danger" onClick={() => { dispatch(deleteCandidate(deleteId)); setDeleteId(null); dispatch(fetchCandidates({page:1, size:5}));
-               setPageSize(5); setCurrentPage(1) }}>Remove</button>
+              <button className="btn btn-danger" onClick={() => { handleDelete(deleteId) }}>Remove</button>
               <button className="btn btn-secondary" onClick={() => setDeleteId(null)}>Cancel</button>
             </div>
           </div>

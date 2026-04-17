@@ -15,7 +15,7 @@ const JobModal = ({ initial, onClose, onSave, jobTypes }) => {
   const handleSubmit = async e => { 
     e.preventDefault(); 
     setSaving(true); 
-    await onSave(form); 
+    await onSave({...form, jobTitle:`${form.jobTitle}----${form.companyName}`}); 
     setSaving(false); onClose(); }
   
   return (
@@ -138,7 +138,7 @@ const Jobs = () => {
       <div className="page-header">
         <div>
           <div className="page-title">Job Listings</div>
-          <div className="page-subtitle">{totalElements} total · {items?.filter(j => j.status === 'Open')?.length} Open</div>
+          <div style={{ color:'var(--text-primary)', fontWeight:100, fontFamily:'var(--font-display)', whiteSpace:'nowrap' }}>{totalElements} total · {items?.filter(j => j.status === 'Open')?.length} Open</div>
         </div>
         {canEdit && <button className="btn btn-primary" onClick={() => { setEditItem(null); setModal('create') }}>+ Post Job</button>}
       </div>
@@ -146,13 +146,13 @@ const Jobs = () => {
       <div className="filter-bar">
         <div className="search-input-wrap">
           <span className="search-icon">🔍</span>
-          <input className="form-control search-input" placeholder="Search jobs..." value={search} onChange={handleSearchChange} />
+          <input className="form-control search-input" placeholder="Search jobs by title, location..." value={search} onChange={handleSearchChange} />
         </div>
-        <select className="form-control" style={{ width:140 }} value={filterStatus} onChange={handleFilterChange}>
+        {/* <select className="form-control" style={{ width:140 }} value={filterStatus} onChange={handleFilterChange}>
           <option value="ALL">All Status</option>
           <option value="Open">Open</option>
           <option value="Closed">Closed</option>
-        </select>
+        </select> */}
       </div>
 
       <div className="glass-card" style={{ overflow:'hidden' }}>
