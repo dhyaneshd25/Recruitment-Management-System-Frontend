@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchInterviews, createInterview, updateInterview, deleteInterview } from '../../store/slices/interviewSlice'
 import { fetchCandidates } from '../../store/slices/candidateSlice'
+import Pagination from '../Pagination'
 
 const STATUSES = ['SCHEDULED', 'COMPLETED', 'CANCELLED']
 const MODES = ['VIDEO', 'IN_PERSON', 'PHONE']
@@ -10,21 +11,23 @@ const EMPTY = { candidateId: '', candidateName: '', interviewerId: '', interview
 const statusBadge = { SCHEDULED: 'badge-amber', COMPLETED: 'badge-green', CANCELLED: 'badge-red' }
 const modeBadge = { VIDEO: 'badge-blue', IN_PERSON: 'badge-purple', PHONE: 'badge-cyan' }
 
-const InterviewModal = ({ initial, candidates, onClose, onSave }) => {
+const InterviewModal = ({ initial, candidates, onClose, onSave, user }) => {
   const [form, setForm] = useState(initial || EMPTY)
   const [saving, setSaving] = useState(false)
   const set = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
 
   const handleCandidateChange = (e) => {
     const candidate = candidates.find(c => c.id === e.target.value)
-    setForm(p => ({ ...p, candidateId: e.target.value, candidateName: candidate?.userName || '' }))
+    setForm(p => ({ ...p, candidateId: candidate.id, candidateName: candidate?.name || '' }))
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setSaving(true)
-    await onSave(form); setSaving(false); onClose()
+    await onSave({...form, interviewerId:user.id, interviewerName:user.name}); setSaving(false); onClose()
   }
 
+  console.log(initial)
+  console.log(candidates)
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={e => e.stopPropagation()}>
@@ -40,7 +43,7 @@ const InterviewModal = ({ initial, candidates, onClose, onSave }) => {
               {candidates.map(c => <option key={c.id} value={c.id}>{c.userName} — {c.jobTitle}</option>)}
             </select>
           </div>
-          <div className="grid-2">
+          {/* <div className="grid-2">
             <div className="form-group">
               <label className="form-label">Interviewer ID</label>
               <input name="interviewerId" className="form-control" value={form.interviewerId} onChange={set} placeholder="Interviewer ID" required />
@@ -49,7 +52,7 @@ const InterviewModal = ({ initial, candidates, onClose, onSave }) => {
               <label className="form-label">Interviewer Name</label>
               <input name="interviewerName" className="form-control" value={form.interviewerName} onChange={set} placeholder="Interviewer name" required />
             </div>
-          </div>
+          </div> */}
           <div className="grid-2">
             <div className="form-group">
               <label className="form-label">Date</label>
@@ -102,33 +105,47 @@ const InterviewModal = ({ initial, candidates, onClose, onSave }) => {
 
 const Interviews = () => {
   const dispatch = useDispatch()
-  const { items, loading } = useSelector(s => s.interviews)
+  const { user } = useSelector(s => s.auth)
+  const { items ,totalElements, totalPages, loading } = useSelector(s => s.interviews)
   const { items: candidates } = useSelector(s => s.candidates)
   const [modal, setModal] = useState(null)
   const [editItem, setEditItem] = useState(null)
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState('ALL')
   const [deleteId, setDeleteId] = useState(null)
+  const [currentPage,  setCurrentPage]  = useState(1)
+  const [pageSize,     setPageSize]     = useState(5)
+ 
+  useEffect(() => { dispatch(fetchInterviews({page:currentPage,size:pageSize, candidateCreatedBy:user.id })); dispatch(fetchCandidates({ page:0, size:10, jobCreatedBy:user.id })) }, [])
 
-  useEffect(() => { dispatch(fetchInterviews()); dispatch(fetchCandidates()) }, [])
-
-  const filtered = items.filter(i => {
-    const match = i.candidateName?.toLowerCase().includes(search.toLowerCase()) || i.interviewerName?.toLowerCase().includes(search.toLowerCase())
-    const statusMatch = filterStatus === 'ALL' || i.status === filterStatus
-    return match && statusMatch
-  })
+  useEffect(() => { dispatch(fetchInterviews({page:currentPage,size:pageSize, candidateCreatedBy:user.id })); }, [currentPage, pageSize])
+  const handlePageChange = p => setCurrentPage(p)   // ← no clamping, Pagination only emits valid pages
+  const handlePageSizeChange = n => {
+    setPageSize(n)
+    setCurrentPage(1)           // triggers the effect above with new size
+  }
 
   const handleSave = async (form) => {
     if (editItem) await dispatch(updateInterview({ id: editItem.id, data: form }))
     else await dispatch(createInterview(form))
+    dispatch(fetchInterviews({ page:1, size:5, candidateCreatedBy:user.id }))
+    setCurrentPage(1)    
+    setPageSize(5)
   }
-
+  const handleSearchChange = (value) => {
+    dispatch(fetchInterviews({ page: 1 , size: 5, search:value, candidateCreatedBy:user.id }))
+    setCurrentPage(1)    
+    setPageSize(5)
+  }  
+  const from = totalElements === 0 ? 0 : (currentPage - 1) * pageSize + 1
+  const to   = Math.min(currentPage * pageSize, totalElements)
+ 
   return (
     <div>
       <div className="page-header">
         <div>
           <div className="page-title">Interviews</div>
-          <div className="page-subtitle">{items.length} total · {items.filter(i => i.status === 'SCHEDULED').length} scheduled</div>
+          <div className="page-subtitle">{items?.length} total · {items?.filter(i => i.status === 'SCHEDULED')?.length} scheduled</div>
         </div>
         <button className="btn btn-primary" onClick={() => { setEditItem(null); setModal('create') }}>+ Schedule Interview</button>
       </div>
@@ -136,9 +153,9 @@ const Interviews = () => {
       <div className="filter-bar">
         <div className="search-input-wrap">
           <span className="search-icon">🔍</span>
-          <input className="form-control search-input" placeholder="Search interviews..." value={search} onChange={e => setSearch(e.target.value)} />
+          <input className="form-control search-input" placeholder="Search interviews..." value={search} onChange={e => { setSearch(e.target.value); handleSearchChange(e.target.value) }} />
         </div>
-        <select className="form-control" style={{ width: 160 }} value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+        <select className="form-control" style={{ width: 160 }} value={filterStatus} onChange={e => { setFilterStatus(e.target.value)}}>
           <option value="ALL">All Status</option>
           {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
@@ -147,15 +164,16 @@ const Interviews = () => {
       <div className="glass-card" style={{ overflow: 'hidden' }}>
         {loading ? (
           <div style={{ padding: 60, textAlign: 'center' }}><span className="spinner" /></div>
-        ) : filtered.length === 0 ? (
+        ) : items?.length === 0 ? (
           <div className="empty-state"><div className="empty-state-icon">🎯</div><div className="empty-state-text">No interviews found</div></div>
         ) : (
+          <>
           <div style={{ overflowX:"auto" }}><table className="data-table">
             <thead>
               <tr><th>Candidate</th><th>Interviewer</th><th>Date & Time</th><th>Duration</th><th>Mode</th><th>Status</th><th>Actions</th></tr>
             </thead>
             <tbody>
-              {filtered.map(iv => (
+              {items?.map(iv => (
                 <tr key={iv.id}>
                   <td style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{iv.candidateName}</td>
                   <td>{iv.interviewerName}</td>
@@ -181,11 +199,23 @@ const Interviews = () => {
               ))}
             </tbody>
           </table></div>
+
+          <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              pageSize={pageSize}
+              onPageChange={handlePageChange}
+              onPageSizeChange={handlePageSizeChange}
+              totalElements={totalElements}
+              from={from}
+              to={to}
+            />        
+          </>
         )}
       </div>
 
       {(modal === 'create' || modal === 'edit') && (
-        <InterviewModal initial={modal === 'edit' ? editItem : null} candidates={candidates} onClose={() => setModal(null)} onSave={handleSave} />
+        <InterviewModal initial={modal === 'edit' ? editItem : null} candidates={candidates} onClose={() => setModal(null)} onSave={handleSave} user={user} />
       )}
 
       {deleteId && (
@@ -195,7 +225,7 @@ const Interviews = () => {
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>Cancel Interview?</h3>
             <p style={{ color: 'var(--text-secondary)', marginBottom: 24, fontSize: 14 }}>This will permanently remove the interview record.</p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <button className="btn btn-danger" onClick={() => { dispatch(deleteInterview(deleteId)); setDeleteId(null) }}>Delete</button>
+              <button className="btn btn-danger" onClick={() => { dispatch(deleteInterview(deleteId)); setDeleteId(null); dispatch(fetchInterviews({ page:1, size:5, candidateCreatedBy:user.id })); setCurrentPage(1); setPageSize(5) }}>Delete</button>
               <button className="btn btn-secondary" onClick={() => setDeleteId(null)}>Cancel</button>
             </div>
           </div>

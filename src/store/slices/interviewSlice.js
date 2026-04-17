@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import api from '../../services/api'
 
 let mockInterviews = [
   { id: '1', candidateId: '3', candidateName: 'Amit Kumar', interviewerId: '2', interviewerName: 'Recuriter Manager', interviewDate: '2024-02-01', interviewTime: '10:00', duration: 60, mode: 'VIDEO', meetingLink: 'https://meet.google.com/abc-defg-hij', feedback: 'Strong React fundamentals, good problem-solving skills.', status: 'COMPLETED' },
@@ -7,38 +8,38 @@ let mockInterviews = [
   { id: '4', candidateId: '1', candidateName: 'Rahul Sharma', interviewerId: '1', interviewerName: 'Alex Admin', interviewDate: '2024-01-28', interviewTime: '15:00', duration: 60, mode: 'VIDEO', meetingLink: 'https://meet.google.com/xyz-abcd-efg', feedback: 'Average performance. Needs improvement in system design.', status: 'CANCELLED' },
 ]
 
-export const fetchInterviews = createAsyncThunk('interviews/fetchAll', async () => {
+export const fetchInterviews = createAsyncThunk('interviews/fetchAll', async ({ page=1, size=5, search="",candidateCreatedBy }) => {
   await new Promise(r => setTimeout(r, 400))
-  return [...mockInterviews]
+  const res = await api.get("/interview/get",{ params : { page, size, search, candidateCreatedBy}})
+  return res.data;
 })
 
 export const createInterview = createAsyncThunk('interviews/create', async (data) => {
   await new Promise(r => setTimeout(r, 400))
-  const newInterview = { ...data, id: String(Date.now()) }
-  mockInterviews.push(newInterview)
-  return newInterview
+  const res = await api.post("/interview/create",data)
+  return res.data
 })
 
 export const updateInterview = createAsyncThunk('interviews/update', async ({ id, data }) => {
   await new Promise(r => setTimeout(r, 400))
-  mockInterviews = mockInterviews.map(i => i.id === id ? { ...i, ...data } : i)
-  return { id, ...data }
+  const res = await api.put(`/interview/update/${id}`,data)
+  return res.data;
 })
 
 export const deleteInterview = createAsyncThunk('interviews/delete', async (id) => {
   await new Promise(r => setTimeout(r, 300))
-  mockInterviews = mockInterviews.filter(i => i.id !== id)
-  return id
+  const res = await api.delete(`/interview/delete/${id}`)
+  return res.data;
 })
 
 const interviewSlice = createSlice({
   name: 'interviews',
-  initialState: { items: [], loading: false, error: null },
+  initialState: { items: [], totalElements:0, totalPages:0, loading: false, error: null },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchInterviews.pending, s => { s.loading = true })
-      .addCase(fetchInterviews.fulfilled, (s, a) => { s.loading = false; s.items = a.payload })
+      .addCase(fetchInterviews.fulfilled, (s, a) => { s.loading = false; s.items = a.payload.data; s.totalElements = a.payload.totalElements; s.totalPages   = a.payload.totalPages })
       .addCase(fetchInterviews.rejected, s => { s.loading = false })
       .addCase(createInterview.fulfilled, (s, a) => { s.items.push(a.payload) })
       .addCase(updateInterview.fulfilled, (s, a) => {

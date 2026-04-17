@@ -108,6 +108,8 @@ const Jobs = () => {
     if (editItem!=null) await dispatch(updateJob({ id: editItem.id, data: form }))
     else          await dispatch(createJob({...form, createdBy:user.id}))
     dispatch(fetchJobs({ page:1,  size: 5, createdBy:user.id }))
+    setCurrentPage(1)    
+    setPageSize(5)
   }
 
   const handleDelete = async id => {
