@@ -108,8 +108,6 @@ const Sidebar = ({ onClose,isDesktopS,sidebarOpenS }) => {
             {item.label}
           </NavLink>
         ))}
-      </nav>
-
       {/* Logout */}
       <div style={{ padding: '10px 10px 14px', borderTop: '1px solid var(--border-subtle)', flexShrink: 0 }}>
         <button
@@ -129,6 +127,8 @@ const Sidebar = ({ onClose,isDesktopS,sidebarOpenS }) => {
           <span style={{ fontSize: 15 }}>🚪</span> Sign Out
         </button>
       </div>
+      </nav>
+
 
       <style>{`
         @media (max-width:1024px) {

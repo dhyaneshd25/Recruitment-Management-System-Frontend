@@ -11,10 +11,17 @@ let mockCandidates = [
 ]
 
 
-export const fetchCandidates = createAsyncThunk('candidates/fetchAll', async ({ page=1, size=5, search, jobCreatedBy}) => {
+export const fetchCandidates = createAsyncThunk('candidates/fetchAll', async ({ page=1, size=5, search, jobCreatedBy, userId}) => {
   await new Promise(r => setTimeout(r, 400))
   console.log("log")
-  const res =  await api.get("/candidate/get",{params:{ page, size, search, jobCreatedBy}})
+  const res =  await api.get("/candidate/get",{params:{ page, size, search, jobCreatedBy, userId}})
+  return res.data;
+})
+
+export const fetchCandidatesByUserId = createAsyncThunk('candidates/fetchAll/userId', async ({ page=1, size=5, search, userId}) => {
+  await new Promise(r => setTimeout(r, 400))
+  console.log("log")
+  const res =  await api.get("/candidate/get/userId",{params:{ page, size, search, userId}})
   return res.data;
 })
 
@@ -24,27 +31,6 @@ export const createCandidate = createAsyncThunk('candidates/create', async (data
   const res = await api.post("/candidate/create",{...data, createdAt: new Date().toISOString() })
 
   return res.data
-})
-
-// Called by a logged-in candidate applying for a job
-export const applyForJob = createAsyncThunk('candidates/applyForJob', async ({ job, user, resumeUrl, coverNote }) => {
-  await new Promise(r => setTimeout(r, 600))
-  const entry = {
-    id: `app_${Date.now()}`,
-    userId: user.id,
-    userName: user.name,
-    jobId: job.id,
-    jobTitle: job.jobTitle,
-    jobLocation: job.location,
-    jobSalary: job.salaryRange,
-    jobCompany: job.createdBy || 'Company',
-    resumeUrl,
-    coverNote: coverNote || '',
-    status: 'APPLIED',
-    createdAt: new Date().toISOString(),
-    selfApplied: true,
-  }
- 
 })
 
 export const updateCandidate = createAsyncThunk('candidates/update', async ({ id, data }) => {
@@ -74,9 +60,6 @@ const candidateSlice = createSlice({
       })
       .addCase(fetchCandidates.rejected, s => { s.loading = false })
       .addCase(createCandidate.fulfilled, (s, a) => { s.items.push(a.payload) })
-      .addCase(applyForJob.pending, s => { s.applyLoading = true })
-      .addCase(applyForJob.fulfilled, (s, a) => { s.applyLoading = false; s.items.push(a.payload) })
-      .addCase(applyForJob.rejected, s => { s.applyLoading = false })
       .addCase(updateCandidate.fulfilled, (s, a) => {
         const idx = s.items.findIndex(c => c.id === a.payload.id)
         if (idx !== -1) s.items[idx] = { ...s.items[idx], ...a.payload }
@@ -84,6 +67,13 @@ const candidateSlice = createSlice({
       .addCase(deleteCandidate.fulfilled, (s, a) => {
         s.items = s.items.filter(c => c.id !== a.payload)
       })
+      .addCase(fetchCandidatesByUserId.pending, s => { s.loading = true })
+      .addCase(fetchCandidatesByUserId.fulfilled, (s, a) => { 
+        s.loading      = false
+        s.items        = a.payload.data       
+        s.totalElements = a.payload.totalElements
+        s.totalPages   = a.payload.totalPages
+      })      
   },
 })
 

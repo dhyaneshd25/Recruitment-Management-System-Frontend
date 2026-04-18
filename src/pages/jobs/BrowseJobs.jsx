@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchCandidates, applyForJob } from '../../store/slices/candidateSlice'
+import { fetchCandidatesByUserId, createCandidate } from '../../store/slices/candidateSlice'
+import { fetchJobType, fetchJobsWOF } from '../../store/slices/jobSlice'
 
 const JOBS = [
   { id:'1', jobTitle:'Senior React Developer',  description:'Build cutting-edge web apps using React, Redux, GraphQL. Strong hooks knowledge required. Work with a dynamic product team.',                     location:'Bangalore', experience:3, salaryRange:'15–25 LPA', createdBy:'TechCorp',   tag:'Frontend',   color:'#6366f1' },
@@ -17,7 +18,7 @@ const JOBS = [
 const TAGS = ['All','Frontend','Backend','Full Stack','Design','DevOps','ML/AI','Product','Mobile','QA']
 
 // ── Apply Modal ───────────────────────────────────────────────────────────────
-const ApplyModal = ({ job, onClose }) => {
+const ApplyModal = ({ job, onClose, userI }) => {
   const dispatch = useDispatch()
   const { user } = useSelector(s=>s.auth)
   const { applyLoading } = useSelector(s=>s.candidates)
@@ -26,8 +27,9 @@ const ApplyModal = ({ job, onClose }) => {
 
   const handleSubmit = async e => {
     e.preventDefault()
-    const result = await dispatch(applyForJob({ job, user, resumeUrl:form.resumeUrl, coverNote:form.coverNote }))
-    if (applyForJob.fulfilled.match(result)) setDone(true)
+    const result = await dispatch(createCandidate({ jobId:job.id, userId:userI.id, resumeUrl:form.resumeUrl, coverNote:form.coverNote }))
+    if (createCandidate.fulfilled.match(result)) setDone(true)
+    dispatch(fetchJobsWOF()); dispatch(fetchCandidatesByUserId({ userId : userI.id}))  
   }
 
   if (done) return (
@@ -118,16 +120,17 @@ const JobDetail = ({ job, applied, onApply, onClose }) => (
 const BrowseJobs = () => {
   const dispatch = useDispatch()
   const { user } = useSelector(s=>s.auth)
-  const { items: candidates } = useSelector(s=>s.candidates)
+  const { items: candidates, totalElements, totalPages } = useSelector(s=>s.candidates)
+  const { items:jobs, jobTypeData }  = useSelector(s => s.jobs)
   const [search, setSearch] = useState('')
   const [tag, setTag] = useState('All')
   const [selectedJob, setSelectedJob] = useState(null)
   const [applyingJob, setApplyingJob] = useState(null)
 
-  useEffect(()=>{ dispatch(fetchCandidates()) },[])
+  useEffect(()=>{ dispatch(fetchJobsWOF()); dispatch(fetchJobType()); dispatch(fetchCandidatesByUserId({ userId : user.id})) },[])
 
-  const appliedIds = new Set(candidates.filter(c=>c.userId===user?.id||c.userName===user?.name).map(c=>c.jobId))
-  const filtered = JOBS.filter(j=>{
+  const appliedIds = new Set(candidates.map(c=>c.jobId))
+  const filtered = jobs?.filter(j=>{
     const ms=j.jobTitle.toLowerCase().includes(search.toLowerCase())||j.location.toLowerCase().includes(search.toLowerCase())||j.tag.toLowerCase().includes(search.toLowerCase())
     const mt=tag==='All'||j.tag===tag
     return ms&&mt
@@ -140,7 +143,7 @@ const BrowseJobs = () => {
       <div className="page-header">
         <div>
           <div className="page-title">Browse Jobs</div>
-          <div className="page-subtitle">{JOBS.length} open positions · {appliedIds.size} applied</div>
+          <div className="page-subtitle">{jobs?.length} open positions · {appliedIds.size} applied</div>
         </div>
         {appliedIds.size>0&&<div style={{ display:'flex', alignItems:'center', gap:8, padding:'7px 14px', background:'rgba(16,185,129,0.1)', border:'1px solid rgba(16,185,129,0.25)', borderRadius:10 }}>
           <span style={{ width:7, height:7, borderRadius:'50%', background:'#10b981', display:'inline-block' }} />
@@ -156,7 +159,7 @@ const BrowseJobs = () => {
 
       {/* Tags */}
       <div style={{ display:'flex', gap:7, flexWrap:'wrap', marginBottom:20 }}>
-        {TAGS.map(t=>(
+        {jobTypeData?.map(t=>(
           <button key={t} onClick={()=>setTag(t)} style={{ padding:'5px 14px', borderRadius:20, cursor:'pointer', fontSize:11, fontFamily:'var(--font-body)', fontWeight:600, background:tag===t?'linear-gradient(135deg,#6366f1,#8b5cf6)':'var(--bg-hover)', color:tag===t?'white':'var(--text-secondary)', border:tag===t?'none':'1px solid var(--border-subtle)', boxShadow:tag===t?'0 4px 12px rgba(99,102,241,0.3)':'none', transition:'all 0.15s' }}>
             {t}
           </button>
@@ -169,7 +172,7 @@ const BrowseJobs = () => {
 
       {/* Grid — shrinks when detail panel is open */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))', gap:14, paddingRight:selectedJob?'min(440px,100vw)':0, transition:'padding 0.2s' }}>
-        {filtered.map(job=>{
+        {jobs?.map(job=>{
           const applied=appliedIds.has(job.id)
           const isSel=selectedJob?.id===job.id
           return (
@@ -187,7 +190,7 @@ const BrowseJobs = () => {
                   </div>
                 </div>
                 <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:4, flexShrink:0, marginLeft:8 }}>
-                  <span style={{ padding:'2px 8px', borderRadius:9, fontSize:9, fontWeight:700, background:`${job.color}18`, color:job.color, border:`1px solid ${job.color}33` }}>{job.tag}</span>
+                  <span style={{ padding:'2px 8px', borderRadius:9, fontSize:9, fontWeight:700, background:`${job.color}18`, color:job.color, border:`1px solid ${job.color || 'blue'}` }}>{job.jobType}</span>
                   {applied&&<span style={{ padding:'2px 8px', borderRadius:9, fontSize:9, fontWeight:700, background:'rgba(16,185,129,0.15)', color:'#10b981', border:'1px solid rgba(16,185,129,0.3)' }}>✓</span>}
                 </div>
               </div>
@@ -223,7 +226,7 @@ const BrowseJobs = () => {
           <JobDetail job={selectedJob} applied={appliedIds.has(selectedJob.id)} onApply={handleApply} onClose={()=>setSelectedJob(null)} />
         </>
       )}
-      {applyingJob&&<ApplyModal job={applyingJob} onClose={()=>setApplyingJob(null)} />}
+      {applyingJob&&<ApplyModal job={applyingJob} onClose={()=>setApplyingJob(null)} userI={user}/>}
     </div>
   )
 }

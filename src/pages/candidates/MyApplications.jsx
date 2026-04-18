@@ -1,15 +1,15 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchCandidates } from '../../store/slices/candidateSlice'
+import { fetchCandidatesByUserId } from '../../store/slices/candidateSlice'
 import { useNavigate } from 'react-router-dom'
 
-const STATUS_STEPS = ['APPLIED', 'SHORTLISTED', 'INTERVIEW_SCHEDULED', 'HIRED']
+const STATUS_STEPS = ['APPLIED', 'SCREENING', 'INTERVIEW', 'SELECTED']
 
 const STATUS_CONFIG = {
   APPLIED:              { label: 'Applied',             color: '#6366f1', bg: 'rgba(99,102,241,0.15)',   border: 'rgba(99,102,241,0.35)',   icon: '📨' },
-  SHORTLISTED:          { label: 'Shortlisted',         color: '#22d3ee', bg: 'rgba(34,211,238,0.15)',   border: 'rgba(34,211,238,0.35)',   icon: '⭐' },
-  INTERVIEW_SCHEDULED:  { label: 'Interview Scheduled', color: '#a78bfa', bg: 'rgba(167,139,250,0.15)',  border: 'rgba(167,139,250,0.35)',  icon: '📅' },
-  HIRED:                { label: 'Hired! 🎉',           color: '#10b981', bg: 'rgba(16,185,129,0.15)',   border: 'rgba(16,185,129,0.35)',   icon: '🏆' },
+  SCREENING:          { label: 'Shortlisted',         color: '#22d3ee', bg: 'rgba(34,211,238,0.15)',   border: 'rgba(34,211,238,0.35)',   icon: '⭐' },
+  INTERVIEW:  { label: 'Interview Scheduled', color: '#a78bfa', bg: 'rgba(167,139,250,0.15)',  border: 'rgba(167,139,250,0.35)',  icon: '📅' },
+  SELECTED:                { label: 'Hired! 🎉',           color: '#10b981', bg: 'rgba(16,185,129,0.15)',   border: 'rgba(16,185,129,0.35)',   icon: '🏆' },
   REJECTED:             { label: 'Not Selected',        color: '#f43f5e', bg: 'rgba(244,63,94,0.15)',    border: 'rgba(244,63,94,0.35)',    icon: '😔' },
 }
 
@@ -84,7 +84,7 @@ const MyApplications = () => {
   const { items, loading } = useSelector(s => s.candidates)
   const { user } = useSelector(s => s.auth)
 
-  useEffect(() => { dispatch(fetchCandidates()) }, [])
+  useEffect(() => { dispatch(fetchCandidatesByUserId({ userId : user.id})) }, [])
 
   // Filter only applications by the current user
   const myApps = items.filter(c =>
@@ -93,9 +93,9 @@ const MyApplications = () => {
 
   const stats = {
     total: myApps.length,
-    shortlisted: myApps.filter(a => ['SHORTLISTED', 'INTERVIEW_SCHEDULED', 'HIRED'].includes(a.status)).length,
-    interviews: myApps.filter(a => a.status === 'INTERVIEW_SCHEDULED').length,
-    hired: myApps.filter(a => a.status === 'HIRED').length,
+    shortlisted: myApps.filter(a => ['SCREENING', 'INTERVIEW', 'SELECTED'].includes(a.status)).length,
+    interviews: myApps.filter(a => a.status === 'INTERVIEW').length,
+    hired: myApps.filter(a => a.status === 'SELECTED').length,
   }
 
   return (

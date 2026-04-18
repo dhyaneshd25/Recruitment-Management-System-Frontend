@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { applyForJob, fetchCandidates } from '../store/slices/candidateSlice'
+import { createCandidate, fetchCandidates } from '../store/slices/candidateSlice'
 import { toggleTheme } from '../store/slices/themeSlice'
 import ThreeBackground from '../components/ThreeBackground'
 
@@ -28,8 +28,8 @@ const ApplyModal = ({ job, onClose, navigate, isLoggedIn, user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!isLoggedIn) { navigate('/register'); return }
-    const result = await dispatch(applyForJob({ job, user, resumeUrl: form.resumeUrl, coverNote: form.coverNote }))
-    if (applyForJob.fulfilled.match(result)) setDone(true)
+    const result = await dispatch(createCandidate({ job, user, resumeUrl: form.resumeUrl, coverNote: form.coverNote }))
+    if (createCandidate.fulfilled.match(result)) setDone(true)
   }
 
   if (done) return (

@@ -26,6 +26,11 @@ export const fetchJobs = createAsyncThunk('job/get', async ({ page = 1, size = 5
   }
 })
 
+export const fetchJobsWOF = createAsyncThunk('job/getA', async() =>{
+  await new Promise(r => setTimeout(r, 400))
+  const res = await api.get('/job/getA')
+  return res.data;
+})
 export const createJob = createAsyncThunk('job/create', async (jobData, { rejectWithValue }) => {
   try {
     await new Promise(r => setTimeout(r, 500))
@@ -97,6 +102,14 @@ const jobSlice = createSlice({
       .addCase(fetchJobType.fulfilled, (s,a) => {
         s.jobTypeData = a.payload
       })
+      .addCase(fetchJobsWOF.pending,    s => { s.loading = true; s.error = null })
+      .addCase(fetchJobsWOF.fulfilled,  (s, a) => {
+        s.loading      = false
+        s.items        = a.payload.data        // current page rows
+        s.totalElements = a.payload.totalElements
+        s.totalPages   = a.payload.totalPages
+      })
+      .addCase(fetchJobsWOF.rejected,   (s, a) => { s.loading = false; s.error = a.payload })
   },
 })
 
