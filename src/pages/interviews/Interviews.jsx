@@ -185,12 +185,13 @@ const Interviews = () => {
           <>
           <div style={{ overflowX:"auto" }}><table className="data-table">
             <thead>
-              <tr><th>Candidate</th><th>Interviewer</th><th>Date & Time</th><th>Duration</th><th>Mode</th><th>Status</th><th>Actions</th></tr>
+              <tr><th>Candidate</th><th>Applied Job</th><th>Interviewer</th><th>Date & Time</th><th>Duration</th><th>Mode</th><th>Status</th><th>Actions</th></tr>
             </thead>
             <tbody>
               {items?.map(iv => (
                 <tr key={iv.id}>
                   <td style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{iv.candidateName}</td>
+                  <td>{iv?.jobTitle}</td>
                   <td>{iv.interviewerName}</td>
                   <td>
                     <div style={{ fontSize: 13 }}>📅 {iv.interviewDate}</div>

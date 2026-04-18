@@ -14,6 +14,15 @@ const PAGE_META = {
   '/my-interviews':   { title: 'My Interviews',    emoji: '📅' },
 }
 
+
+const ROLE_STYLE = {
+  ADMIN:     { color: '#f43f5e', bg: 'rgba(244,63,94,0.12)',  border: 'rgba(244,63,94,0.3)' },
+  RECURITER:        { color: '#10b981', bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.3)' },
+  CANDIDATE: { color: '#818cf8', bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.3)' },
+}
+
+
+
 const Navbar = ({ onMenuToggle }) => {
   const { user } = useSelector(s => s.auth)
   const { mode } = useSelector(s => s.theme)
@@ -22,7 +31,7 @@ const Navbar = ({ onMenuToggle }) => {
   const navigate = useNavigate()
   const meta = PAGE_META[pathname] || { title: 'recruitEdge', emoji: '✦' }
   const isLight = mode === 'light'
-
+  const rs = ROLE_STYLE[user?.role] || ROLE_STYLE.CANDIDATE
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', mode)
   }, [mode])
@@ -84,7 +93,7 @@ const Navbar = ({ onMenuToggle }) => {
         <div style={{ width: 1, height: 22, background: 'var(--border-subtle)', flexShrink: 0 }} />
 
         {/* User chip */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 10px', borderRadius: 10, background: 'rgba(99,102,241,0.06)', border: '1px solid var(--border-subtle)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 10px', borderRadius: 10, background: 'rgba(99,102,241,0.06)', cursor:'pointer', border: '1px solid var(--border-subtle)' }}>
           <div style={{
             width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
             background: 'linear-gradient(135deg,#6366f1,#8b5cf6)',
@@ -97,6 +106,17 @@ const Navbar = ({ onMenuToggle }) => {
           </div>
         </div>
       </div>
+
+        {/* <div className="modal-overlay">
+          <div className="modal-box" onClick={e => e.stopPropagation()} style={{position:'absolute', top:'39px', right:"10px" , maxWidth:200, maxHeight:200, textAlign:'center'}}>
+            <h3 style={{ fontFamily:'var(--font-display)', fontSize:17, fontWeight:700, color:'var(--text-primary)', marginBottom:8 }}>Delete Job?</h3>
+            <p style={{ color:'var(--text-secondary)', marginBottom:22, fontSize:13 }}>This action cannot be undone.</p>
+            <div style={{ display:'flex', gap:10, justifyContent:'center', margin:'3px' }}>
+              <button className="btn btn-danger">Sign out</button>
+              <button className="btn btn-secondary">Cancel</button>
+            </div>
+          </div>
+        </div> */}
 
       <style>{`
         @media (max-width:640px) { .hide-sm { display:none!important; } }
