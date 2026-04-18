@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchInterviews } from '../../store/slices/interviewSlice'
+import { fetchInterviewsByCandidateUserId } from '../../store/slices/interviewSlice'
 
 const statusBadge = { SCHEDULED: 'badge-amber', COMPLETED: 'badge-green', CANCELLED: 'badge-red' }
 const modeIcon = { VIDEO: '📹', IN_PERSON: '🏢', PHONE: '📞' }
@@ -10,7 +10,7 @@ const MyInterviews = () => {
   const { items, loading } = useSelector(s => s.interviews)
   const { user } = useSelector(s => s.auth)
 
-  useEffect(() => { dispatch(fetchInterviews()) }, [])
+  useEffect(() => { dispatch(fetchInterviewsByCandidateUserId({ candidateUserId:user.id })) }, [])
 
   const myInterviews = items.filter(i => i.candidateId === user?.id || i.candidateName === user?.name)
   const upcoming = myInterviews.filter(i => i.status === 'SCHEDULED')

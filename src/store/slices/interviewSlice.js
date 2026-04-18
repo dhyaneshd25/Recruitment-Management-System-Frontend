@@ -14,6 +14,12 @@ export const fetchInterviews = createAsyncThunk('interviews/fetchAll', async ({ 
   return res.data;
 })
 
+export const fetchInterviewsByCandidateUserId = createAsyncThunk('interviews/candidateUserId', async ({ page=1, size=5, search="",candidateUserId }) => {
+  await new Promise(r => setTimeout(r, 400))
+  const res = await api.get("/interview/get/candidateUserId",{ params : { page, size, search, candidateUserId}})
+  return res.data;
+})
+
 export const createInterview = createAsyncThunk('interviews/create', async (data) => {
   await new Promise(r => setTimeout(r, 400))
   const res = await api.post("/interview/create",data)
@@ -49,6 +55,9 @@ const interviewSlice = createSlice({
       .addCase(deleteInterview.fulfilled, (s, a) => {
         s.items = s.items.filter(i => i.id !== a.payload)
       })
+      .addCase(fetchInterviewsByCandidateUserId.pending, s => { s.loading = true })
+      .addCase(fetchInterviewsByCandidateUserId.fulfilled, (s, a) => { s.loading = false; s.items = a.payload.data; s.totalElements = a.payload.totalElements; s.totalPages   = a.payload.totalPages })
+      .addCase(fetchInterviewsByCandidateUserId.rejected, s => { s.loading = false })      
   },
 })
 
