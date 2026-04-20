@@ -48,11 +48,11 @@ export const registerUser = createAsyncThunk('auth/register', async (userData, {
   }
 })
 
-export const googleLogin = createAsyncThunk('auth/googleLogin', async (tokenData, { rejectWithValue }) => {
+export const googleLogin = createAsyncThunk('auth/googleLogin', async ( { token, role}, { rejectWithValue }) => {
   try {
     await new Promise(resolve => setTimeout(resolve, 600))
     try {
-      const res = await api.post('/auth/googleLogin', tokenData)
+      const res = await api.post('/auth/googleLogin', { token, role })
       return res.data
     } catch {
       return rejectWithValue(err.message || 'Google Login failed')

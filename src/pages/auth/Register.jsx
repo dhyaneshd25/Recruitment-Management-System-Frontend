@@ -73,7 +73,7 @@ const Register = () => {
               <select className="form-control" value={form.role} onChange={e => setForm(p => ({ ...p, role: e.target.value }))}>
                 <option value="CANDIDATE">Job Seeker / Candidate</option>
                 <option value="RECURITER">Recuriter Manager</option>
-                <option value="ADMIN">Admin</option>
+                {/* <option value="ADMIN">Admin</option> */}
               </select>
             </div>
             <button type="submit" className="btn btn-primary btn-lg w-full" style={{ justifyContent: 'center' }} disabled={loading}>
