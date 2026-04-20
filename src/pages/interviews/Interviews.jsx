@@ -5,7 +5,7 @@ import { fetchCandidates } from '../../store/slices/candidateSlice'
 import { toast } from 'react-toastify'
 import Pagination from '../../components/Pagination'
 
-const STATUSES = ['SCHEDULED', 'COMPLETED', 'CANCELLED']
+const STATUSES = ['MARKED','SCHEDULED', 'COMPLETED', 'CANCELLED']
 const MODES = ['VIDEO', 'IN_PERSON', 'PHONE']
 const EMPTY = { candidateId: '', candidateName: '', interviewerId: '', interviewerName: '', interviewDate: '', interviewTime: '', duration: 60, mode: 'VIDEO', meetingLink: '', feedback: '', status: 'SCHEDULED' }
 

@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { fetchJobs } from '../../store/slices/jobSlice'
-import { fetchCandidates } from '../../store/slices/candidateSlice'
-import { fetchInterviews } from '../../store/slices/interviewSlice'
+import { fetchJobs, fetchJobsWOF } from '../../store/slices/jobSlice'
+import { fetchCandidates, fetchCandidatesByUserId } from '../../store/slices/candidateSlice'
+import { fetchInterviews, fetchInterviewsByCandidateUserId } from '../../store/slices/interviewSlice'
 import { fetchUsers } from '../../store/slices/userSlice'
 
 const STATUS_BADGE = {
-  OPEN:'badge-green', CLOSED:'badge-red', DRAFT:'badge-amber',
+  Open:'badge-green', CLOSED:'badge-red', DRAFT:'badge-amber',
   APPLIED:'badge-blue', SHORTLISTED:'badge-cyan', INTERVIEW_SCHEDULED:'badge-purple',
   HIRED:'badge-green', REJECTED:'badge-red', SCHEDULED:'badge-amber',
   COMPLETED:'badge-green', CANCELLED:'badge-red',
@@ -22,7 +22,7 @@ const StatCard = ({ icon, label, value, color }) => (
 )
 
 // ── Candidate dashboard ────────────────────────────────────────────────────────
-const CandidateDashboard = ({ user, candidates, interviews }) => {
+const CandidateDashboard = ({ user, jobs, candidates, interviews }) => {
   const navigate = useNavigate()
   const myApps = candidates.filter(c => c.userId===user?.id || c.userName===user?.name)
   const myIvs  = interviews.filter(i => i.candidateId===user?.id || i.candidateName===user?.name)
@@ -48,9 +48,9 @@ const CandidateDashboard = ({ user, candidates, interviews }) => {
 
       <div className="stats-grid">
         <StatCard icon="📨" label="Applied"     value={myApps.length}                                                                    color="#6366f1" />
-        <StatCard icon="⭐" label="Shortlisted" value={myApps.filter(a=>['SHORTLISTED','INTERVIEW_SCHEDULED','HIRED'].includes(a.status)).length} color="#22d3ee" />
+        <StatCard icon="⭐" label="Shortlisted" value={myApps.filter(a=>['SCREENING','INTERVIEW','SELECTED'].includes(a.status)).length} color="#22d3ee" />
         <StatCard icon="📅" label="Interviews"  value={upcoming.length}                                                                  color="#a78bfa" />
-        <StatCard icon="🏆" label="Offers"      value={myApps.filter(a=>a.status==='HIRED').length}                                      color="#10b981" />
+        <StatCard icon="🏆" label="Offers"      value={myApps.filter(a=>a.status==='SELECTED').length}                                      color="#10b981" />
       </div>
 
       <div className="grid-2" style={{ marginBottom:20 }}>
@@ -116,19 +116,19 @@ const CandidateDashboard = ({ user, candidates, interviews }) => {
           <button className="btn btn-secondary btn-sm" onClick={()=>navigate('/browse-jobs')}>Browse All</button>
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))', gap:12 }}>
-          {FEATURED.map(job=>{
+          {jobs?.slice(0,8)?.map(job=>{
             const applied=appliedIds.has(job.id)
             return (
               <div key={job.id} style={{ padding:14, borderRadius:12, background:'var(--bg-hover)', border:`1px solid ${applied?'rgba(16,185,129,0.25)':'var(--border-subtle)'}`, position:'relative', overflow:'hidden' }}>
                 <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg,${job.color},${job.color}66)` }} />
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:8 }}>
                   <div>
-                    <div style={{ fontSize:12, fontWeight:700, color:'var(--text-primary)', lineHeight:1.3, marginBottom:2 }}>{job.title}</div>
+                    <div style={{ fontSize:12, fontWeight:700, color:'var(--text-primary)', lineHeight:1.3, marginBottom:2 }}>{job.jobTitle}</div>
                     <div style={{ fontSize:10, color:'var(--text-muted)' }}>{job.company}</div>
                   </div>
                   <span style={{ padding:'2px 7px', borderRadius:8, fontSize:9, fontWeight:700, background:`${job.color}18`, color:job.color, border:`1px solid ${job.color}30`, flexShrink:0, marginLeft:6 }}>{job.tag}</span>
                 </div>
-                <div style={{ fontSize:11, color:'var(--text-muted)', marginBottom:10 }}>📍 {job.location} · 💰 {job.salary}</div>
+                <div style={{ fontSize:11, color:'var(--text-muted)', marginBottom:10 }}>📍 {job.location} · 💰 {job.salaryRange}</div>
                 {applied
                   ? <div style={{ fontSize:11, color:'#10b981', fontWeight:700 }}>✅ Applied</div>
                   : <button className="btn btn-primary btn-sm w-full" style={{ justifyContent:'center', fontSize:11 }} onClick={()=>navigate('/browse-jobs')}>Apply Now</button>
@@ -145,10 +145,16 @@ const CandidateDashboard = ({ user, candidates, interviews }) => {
 // ── Admin/Recuriter dashboard ─────────────────────────────────────────────────────────
 const AdminDashboard = ({ user, jobs, candidates, interviews }) => {
   const navigate = useNavigate()
-  const PIPELINE = ['APPLIED','SHORTLISTED','INTERVIEW_SCHEDULED','HIRED','REJECTED']
-  const maxCnt = Math.max(...PIPELINE.map(s=>candidates.filter(c=>c.status===s).length), 1)
+ const PIPELINE = [
+  { key: 'APPLIED',              label: 'APPLIED' },
+  { key: 'SCREENING',          label: 'SHORTLISTED' },
+  { key: 'INTERVIEW',  label: 'INTERVIEW SCHEDULED' },
+  { key: 'SELECTED',                label: 'HIRED' },
+  { key: 'REJECTED',             label: 'REJECTED' },
+]
+  const maxCnt = Math.max(...PIPELINE.map(s=>candidates.filter(c=>c.status===s.key).length), 1)
   const recent = [...candidates].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6)
-  const upcoming = interviews.filter(i=>i.status==='SCHEDULED').slice(0,5)
+  const upcoming = interviews.filter(i=>i.status==='INTERVIEW').slice(0,5)
 
   return (
     <div>
@@ -160,10 +166,10 @@ const AdminDashboard = ({ user, jobs, candidates, interviews }) => {
       </div>
 
       <div className="stats-grid">
-        <StatCard icon="💼" label="Open Jobs"         value={jobs.filter(j=>j.status==='OPEN').length}         color="#6366f1" />
+        <StatCard icon="💼" label="Open Jobs"         value={jobs.filter(j=>j.status==='Open').length}         color="#6366f1" />
         <StatCard icon="👤" label="Active Candidates" value={candidates.filter(c=>c.status!=='REJECTED').length} color="#8b5cf6" />
         <StatCard icon="🎯" label="Scheduled"         value={upcoming.length}                                   color="#22d3ee" />
-        <StatCard icon="✅" label="Total Hired"       value={candidates.filter(c=>c.status==='HIRED').length}    color="#10b981" />
+        <StatCard icon="✅" label="Total Hired"       value={candidates.filter(c=>c.status==='SELECTED').length}    color="#10b981" />
       </div>
 
       <div className="grid-2" style={{ marginBottom:20 }}>
@@ -171,12 +177,12 @@ const AdminDashboard = ({ user, jobs, candidates, interviews }) => {
         <div className="glass-card" style={{ padding:20 }}>
           <div style={{ fontFamily:'var(--font-display)', fontSize:15, fontWeight:700, color:'var(--text-primary)', marginBottom:18 }}>Candidate Pipeline</div>
           {PIPELINE.map(s=>{
-            const cnt=candidates.filter(c=>c.status===s).length
+            const cnt=candidates.filter(c=>c.status===s.key).length
             const pct=(cnt/maxCnt)*100
-            const bar=s==='HIRED'?'#10b981':s==='REJECTED'?'#f43f5e':s==='INTERVIEW_SCHEDULED'?'#a78bfa':s==='SHORTLISTED'?'#22d3ee':'#6366f1'
+            const bar=s.key==='SELECTED'?'#10b981':s.key==='REJECTED'?'#f43f5e':s.key==='INTERVIEW'?'#a78bfa':s.key==='SCREENING'?'#22d3ee':'#6366f1'
             return (
-              <div key={s} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>
-                <div style={{ width:130, fontSize:11, color:'var(--text-muted)', textTransform:'capitalize', flexShrink:0 }}>{s.replace(/_/g,' ')}</div>
+              <div key={s.key} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>
+                <div style={{ width:130, fontSize:11, color:'var(--text-muted)', textTransform:'capitalize', flexShrink:0 }}>{s.label.replace(/_/g,' ')}</div>
                 <div style={{ flex:1, height:6, background:'rgba(99,102,241,0.08)', borderRadius:3, overflow:'hidden', minWidth:0 }}>
                   <div style={{ width:`${pct}%`, height:'100%', background:bar, borderRadius:3, transition:'width 0.6s ease' }} />
                 </div>
@@ -248,16 +254,20 @@ const Dashboard = () => {
   const { items: interviews } = useSelector(s => s.interviews)
 
   useEffect(() => {
-    dispatch(fetchCandidates())
-    dispatch(fetchInterviews())
-    if (['ADMIN','Recuriter'].includes(user?.role)) {
-      dispatch(fetchJobs())
+    if (['ADMIN','RECURITER'].includes(user?.role)) {
+      dispatch(fetchInterviews({ candidateCreatedBy:user.id }))
+      dispatch(fetchCandidates({ jobCreatedBy:user.id }))
+      dispatch(fetchJobs({ createdBy:user.id}))
       if (user?.role==='ADMIN') dispatch(fetchUsers())
-    }
+    }else{
+      dispatch(fetchCandidatesByUserId({ userId : user.id})) 
+      dispatch(fetchJobsWOF())
+      dispatch(fetchInterviewsByCandidateUserId({ candidateUserId:user.id }))
+  }
   }, [])
 
   return user?.role==='CANDIDATE'
-    ? <CandidateDashboard user={user} candidates={candidates} interviews={interviews} />
+    ? <CandidateDashboard user={user} jobs={jobs} candidates={candidates} interviews={interviews} />
     : <AdminDashboard user={user} jobs={jobs} candidates={candidates} interviews={interviews} />
 }
 
