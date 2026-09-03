@@ -16,7 +16,7 @@ const JobModal = ({ initial, onClose, onSave, jobTypes }) => {
   const handleSubmit = async e => { 
     e.preventDefault(); 
     setSaving(true); 
-    await onSave({...form, jobTitle:`${form.jobTitle}----${form.companyName}`}); 
+    await onSave({...form, jobTitle: form?.jobTitle.split("----").length>1 ? form.jobTitle: `${form.jobTitle}----${form.companyName}`}); 
     setSaving(false); onClose(); }
   
   return (

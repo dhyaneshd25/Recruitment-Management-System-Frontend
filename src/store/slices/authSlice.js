@@ -23,14 +23,15 @@ export const loginUser = createAsyncThunk('auth/login', async ({ email, password
       const res = await api.post('/auth/login', { email, password })
       return res.data
     } catch (ex){
-      const user = MOCK_USERS.find(u => u.email === email && u.password === password)
-      if (!user) throw new Error('Invalid credentials')
-      const token = generateMockToken(user)
-      const { password: _, ...safeUser } = user
-      return { token, user: safeUser }
+      // const user = MOCK_USERS.find(u => u.email === email && u.password === password)
+      // if (!user) throw new Error('Invalid credentials')
+      // const token = generateMockToken(user)
+      // const { password: _, ...safeUser } = user
+      // return { token, user: safeUser }
+       return rejectWithValue(ex.response?.data?.message || 'Login failed')
     }
   } catch (err) {
-    return rejectWithValue(err.message || 'Login failed')
+    return rejectWithValue(err.response?.data?.message || 'Login failed')
   }
 })
 
@@ -40,11 +41,11 @@ export const registerUser = createAsyncThunk('auth/register', async (userData, {
     try {
       const res = await api.post('/auth/register', userData)
       return res.data
-    } catch {
-      return rejectWithValue(err.message || 'Registration failed')
+    } catch(e) {
+      return rejectWithValue(e.response?.data?.message || 'Registration failed')
     }
   } catch (err) {
-    return rejectWithValue(err.message || 'Registration failed')
+    return rejectWithValue(err.response?.data?.message || 'Registration failed')
   }
 })
 
@@ -54,8 +55,22 @@ export const googleLogin = createAsyncThunk('auth/googleLogin', async ( { token,
     try {
       const res = await api.post('/auth/googleLogin', { token, role })
       return res.data
-    } catch {
-      return rejectWithValue(err.message || 'Google Login failed')
+    } catch(e) {
+      return rejectWithValue(e.response?.data?.message || 'Google Login failed')
+    }
+  } catch (err) {
+    return rejectWithValue('Google login failed')
+  }
+})
+
+export const googleRegister = createAsyncThunk('auth/googleRegister', async ( { token, role}, { rejectWithValue }) => {
+  try {
+    await new Promise(resolve => setTimeout(resolve, 600))
+    try {
+      const res = await api.post('/auth/googleRegister', { token, role })
+      return res.data
+    } catch(e) {
+      return rejectWithValue(e.response?.data?.message || 'Google Login failed')
     }
   } catch (err) {
     return rejectWithValue('Google login failed')
@@ -97,7 +112,7 @@ const authSlice = createSlice({
     }
     const handleRejected = (state, action) => {
       state.loading = false
-      state.error = action.payload?.response?.data.message || 'Server down try after something'
+      state.error = action.payload || 'Server down try after something'
     }
     builder
       .addCase(loginUser.pending, handlePending)
@@ -109,6 +124,9 @@ const authSlice = createSlice({
       .addCase(googleLogin.pending, handlePending)
       .addCase(googleLogin.fulfilled, handleFulfilled)
       .addCase(googleLogin.rejected, handleRejected)
+      .addCase(googleRegister.pending, handlePending)
+      .addCase(googleRegister.fulfilled, handleFulfilled)
+      .addCase(googleRegister.rejected, handleRejected)      
   },
 })
 

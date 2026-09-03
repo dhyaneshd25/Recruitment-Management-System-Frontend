@@ -20,7 +20,6 @@ export const fetchCandidates = createAsyncThunk('candidates/fetchAll', async ({ 
 
 export const fetchCandidatesByUserId = createAsyncThunk('candidates/fetchAll/userId', async ({ page=1, size=5, search, userId}) => {
   await new Promise(r => setTimeout(r, 400))
-  console.log("log")
   const res =  await api.get("/candidate/get/userId",{params:{ page, size, search, userId}})
   return res.data;
 })
