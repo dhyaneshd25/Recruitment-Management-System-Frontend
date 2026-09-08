@@ -17,7 +17,7 @@ const Register = () => {
   const [selectedRole, setSelectedRole] = useState(null)
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { loading, error, isAuthenticated } = useSelector(s => s.auth)
+  const { loading, error, isAuthenticated, user } = useSelector(s => s.auth)
   const { mode } = useSelector(s => s.theme)
   const isLight = mode === 'light'
 
@@ -26,7 +26,7 @@ const Register = () => {
   }, [mode])
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/dashboard', { replace: true })
+    if (isAuthenticated) navigate(user.role === 'ADMIN' ? '/users' : '/dashboard', { replace: true })
     return () => dispatch(clearError())
   }, [isAuthenticated])
 
@@ -35,14 +35,14 @@ const Register = () => {
     if (form.password.length < 6) { setFormError('Password must be at least 6 characters'); return }
     setFormError('')
     const result = await dispatch(registerUser(form))
-    if (registerUser.fulfilled.match(result)) navigate('/dashboard')
+    if (registerUser.fulfilled.match(result)) result?.payload?.userD?.role=='ADMIN' ? navigate('/users') : navigate('/dashboard')
   }
 
   const handleGoogle = useGoogleLogin({
     onSuccess: async (credentialResponse) => {
       const token = credentialResponse.access_token
       const result = await dispatch(googleRegister({ token, role: selectedRole }))
-      if (googleRegister.fulfilled.match(result)) navigate('/dashboard')
+      if (googleRegister.fulfilled.match(result)) result?.payload?.userD?.role=='ADMIN' ? navigate('/users') : navigate('/dashboard')
     },
     onError: () => console.error('Google Login Failed'),
   })

@@ -10,7 +10,7 @@ const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' })
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { loading, error, isAuthenticated } = useSelector(s => s.auth)
+  const { loading, error, isAuthenticated, user } = useSelector(s => s.auth)
   const { mode } = useSelector(s => s.theme)
   const isLight = mode === 'light'
 
@@ -18,22 +18,23 @@ const Login = () => {
     document.documentElement.setAttribute('data-theme', mode)
   }, [mode])
 
-  useEffect(() => {
-    if (isAuthenticated) navigate('/dashboard', { replace: true })
+  useEffect((e) => {
+    if (isAuthenticated) navigate(user.role === 'ADMIN' ? '/users' : '/dashboard', { replace: true })
     return () => dispatch(clearError())
   }, [isAuthenticated])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     const result = await dispatch(loginUser(form))
-    if (loginUser.fulfilled.match(result)) navigate('/dashboard')
+    if (loginUser.fulfilled.match(result)) result?.payload?.userD?.role=='ADMIN' ? navigate('/users') : navigate('/dashboard')
+    
   }
 
   const handleGoogle = useGoogleLogin({
     onSuccess: async (credentialResponse) => {
       const token = credentialResponse.access_token
       const result = await dispatch(googleLogin({ token }))
-      if (googleLogin.fulfilled.match(result)) navigate('/dashboard')
+      if (googleLogin.fulfilled.match(result)) user.role=='ADMIN' ? navigate('/users') : navigate('/dashboard')
     },
     onError: () => console.error('Google Login Failed'),
   })

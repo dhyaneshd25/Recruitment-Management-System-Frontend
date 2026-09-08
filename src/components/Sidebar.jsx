@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../store/slices/authSlice'
 
 const NAV = [
-  { to: '/dashboard',       icon: '▦',  label: 'Dashboard',        roles: ['ADMIN','RECURITER','CANDIDATE'] },
+  { to: '/dashboard',       icon: '▦',  label: 'Dashboard',        roles: ['RECURITER','CANDIDATE'] },
   { to: '/jobs',            icon: '💼', label: 'Manage Jobs',       roles: ['ADMIN','RECURITER'] },
   { to: '/candidates',      icon: '👤', label: 'Candidates',        roles: ['ADMIN','RECURITER'] },
   { to: '/interviews',      icon: '🎯', label: 'Interviews',        roles: ['ADMIN','RECURITER'] },

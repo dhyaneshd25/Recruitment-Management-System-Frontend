@@ -16,19 +16,21 @@ import MyApplications from './pages/candidates/MyApplications'
 import MyInterviews from './pages/interviews/MyInterviews'
 
 const App = () => {
-  const { isAuthenticated } = useSelector(s => s.auth)
+  const { isAuthenticated, user } = useSelector(s => s.auth)
 
   return (
     <BrowserRouter>
       <Routes>
         {/* Public */}
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login"    element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
-        <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} />
+        <Route path="/login"    element={isAuthenticated ? <Navigate to={user.role === 'ADMIN' ? '/users' : '/dashboard'} replace /> : <Login />} />
+        <Route path="/register" element={isAuthenticated ? <Navigate to={user.role === 'ADMIN' ? '/users' : '/dashboard'} replace /> : <Register />} />
 
         {/* All authenticated users */}
         <Route path="/dashboard" element={
-          <ProtectedRoute><AppLayout><Dashboard /></AppLayout></ProtectedRoute>
+          <ProtectedRoute allowedRoles={['CANDIDATE','RECURITER']}>
+            <AppLayout><Dashboard /></AppLayout>
+          </ProtectedRoute>
         } />
 
         {/* Candidate-only */}

@@ -151,7 +151,7 @@ const LandingPage = () => {
             {isLight ? '🌙' : '☀️'}
           </button>
           {isAuthenticated ? (
-            <button className="btn btn-primary" onClick={() => navigate('/dashboard')}>Dashboard →</button>
+            <button className="btn btn-primary" onClick={() => user.role=='ADMIN' ? navigate('/users') : navigate('/dashboard')}>Dashboard →</button>
           ) : (
             <>
               <button className="btn btn-secondary" onClick={() => navigate('/login')}>Sign In</button>
