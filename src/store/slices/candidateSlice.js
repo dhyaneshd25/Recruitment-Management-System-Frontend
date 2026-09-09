@@ -11,10 +11,10 @@ let mockCandidates = [
 ]
 
 
-export const fetchCandidates = createAsyncThunk('candidates/fetchAll', async ({ page=1, size=5, search, jobCreatedBy, userId}) => {
+export const fetchCandidates = createAsyncThunk('candidates/fetchAll', async ({ page=1, size=5, search, jobCreatedBy, userId, isAdmin = false}) => {
   await new Promise(r => setTimeout(r, 400))
   console.log("log")
-  const res =  await api.get("/candidate/get",{params:{ page, size, search, jobCreatedBy, userId}})
+  const res =  await api.get("/candidate/get",{params:{ page, size, search, jobCreatedBy, userId, isAdmin}})
   return res.data;
 })
 

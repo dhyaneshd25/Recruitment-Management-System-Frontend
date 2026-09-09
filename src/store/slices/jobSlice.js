@@ -12,10 +12,10 @@ let mockJobs = [
 
 // ── Thunks ────────────────────────────────────────────────────────
 
-export const fetchJobs = createAsyncThunk('job/get', async ({ page = 1, size = 5, search="", createdBy } = {}, { rejectWithValue }) => {
+export const fetchJobs = createAsyncThunk('job/get', async ({ page = 1, size = 5, search="", createdBy, isAdmin=false } = {}, { rejectWithValue }) => {
   try {
     await new Promise(r => setTimeout(r, 400))
-    const res = await api.get('/job/get', { params: { page, size, search, createdBy } })
+    const res = await api.get('/job/get', { params: { page, size, search, createdBy, isAdmin } })
     // Expect: { content: [], totalElements: N, totalPages: N }
     return res.data
   } catch {

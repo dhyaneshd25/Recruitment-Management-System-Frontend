@@ -86,9 +86,9 @@ const Candidates = () => {
   const [currentPage,  setCurrentPage]  = useState(1)
   const [pageSize,     setPageSize]     = useState(5)
 
-  useEffect(() => { dispatch(fetchJobs({page:0, size:10, createdBy:user.id})); dispatch(fetchUsersByRole({role:"CANDIDATE"})) }, [])
+  useEffect(() => { dispatch(fetchJobs({page:0, size:10, createdBy:user.id, isAdmin: user?.role === "ADMIN" ? true : false })); dispatch(fetchUsersByRole({role:"CANDIDATE"})) }, [])
 
-  useEffect(() => { dispatch(fetchCandidates({page:currentPage,size:pageSize, jobCreatedBy:user.id })); }, [currentPage, pageSize])
+  useEffect(() => { dispatch(fetchCandidates({page:currentPage,size:pageSize, jobCreatedBy:user.id, isAdmin: user?.role === "ADMIN" ? true : false  })); }, [currentPage, pageSize])
   const handlePageChange = p => setCurrentPage(p)   // ← no clamping, Pagination only emits valid pages
   const handlePageSizeChange = n => {
     setPageSize(n)
@@ -96,7 +96,7 @@ const Candidates = () => {
   }
   const handleSearchChange = (value) => {
     setSearch(value)
-    dispatch(fetchCandidates({ page: 1 , size: 5, search:value, jobCreatedBy:user.id }))
+    dispatch(fetchCandidates({ page: 1 , size: 5, search:value, jobCreatedBy:user.id, isAdmin: user?.role === "ADMIN" ? true : false  }))
     setCurrentPage(1)    
     setPageSize(5)
   }
@@ -106,7 +106,7 @@ const Candidates = () => {
   const handleSave = async (form) => {
     if (editItem) await dispatch(updateCandidate({ id: editItem.id, data: form }))
     else await dispatch(createCandidate(form))
-    dispatch(fetchCandidates({page:1, size:5, jobCreatedBy:user.id }))
+    dispatch(fetchCandidates({page:1, size:5, jobCreatedBy:user.id, isAdmin: user?.role === "ADMIN" ? true : false }))
     setPageSize(5)
     setCurrentPage(1)
   }
@@ -119,7 +119,7 @@ const Candidates = () => {
      }
     setDeleteId(null)
   
-    dispatch(fetchCandidates({ page: 1, size: 5, jobCreatedBy:user.id }))
+    dispatch(fetchCandidates({ page: 1, size: 5, jobCreatedBy:user.id, isAdmin: user?.role === "ADMIN" ? true : false }))
     setCurrentPage(1)
     setPageSize(5)
   }

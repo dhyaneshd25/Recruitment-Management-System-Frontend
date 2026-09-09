@@ -8,9 +8,9 @@ let mockInterviews = [
   { id: '4', candidateId: '1', candidateName: 'Rahul Sharma', interviewerId: '1', interviewerName: 'Alex Admin', interviewDate: '2024-01-28', interviewTime: '15:00', duration: 60, mode: 'VIDEO', meetingLink: 'https://meet.google.com/xyz-abcd-efg', feedback: 'Average performance. Needs improvement in system design.', status: 'CANCELLED' },
 ]
 
-export const fetchInterviews = createAsyncThunk('interviews/fetchAll', async ({ page=1, size=5, search="",candidateCreatedBy }) => {
+export const fetchInterviews = createAsyncThunk('interviews/fetchAll', async ({ page=1, size=5, search="", candidateCreatedBy, isAdmin=false }) => {
   await new Promise(r => setTimeout(r, 400))
-  const res = await api.get("/interview/get",{ params : { page, size, search, candidateCreatedBy}})
+  const res = await api.get("/interview/get",{ params : { page, size, search, candidateCreatedBy, isAdmin}})
   return res.data;
 })
 

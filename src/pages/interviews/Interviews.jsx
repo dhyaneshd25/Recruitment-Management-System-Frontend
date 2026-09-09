@@ -117,9 +117,9 @@ const Interviews = () => {
   const [currentPage,  setCurrentPage]  = useState(1)
   const [pageSize,     setPageSize]     = useState(5)
  
-  useEffect(() => { dispatch(fetchInterviews({page:currentPage,size:pageSize, candidateCreatedBy:user.id })); dispatch(fetchCandidates({ page:0, size:10, jobCreatedBy:user.id })) }, [])
+  useEffect(() => { dispatch(fetchInterviews({page:currentPage,size:pageSize, candidateCreatedBy:user.id, isAdmin: user?.role === "ADMIN" ? true : false  })); dispatch(fetchCandidates({ page:0, size:10, jobCreatedBy:user.id, isAdmin: user?.role === "ADMIN" ? true : false  })) }, [])
 
-  useEffect(() => { dispatch(fetchInterviews({page:currentPage,size:pageSize, candidateCreatedBy:user.id })); }, [currentPage, pageSize])
+  useEffect(() => { dispatch(fetchInterviews({page:currentPage,size:pageSize, candidateCreatedBy:user.id, isAdmin: user?.role === "ADMIN" ? true : false  })); }, [currentPage, pageSize])
   const handlePageChange = p => setCurrentPage(p)   // ← no clamping, Pagination only emits valid pages
   const handlePageSizeChange = n => {
     setPageSize(n)
@@ -129,12 +129,12 @@ const Interviews = () => {
   const handleSave = async (form) => {
     if (editItem) await dispatch(updateInterview({ id: editItem.id, data: form }))
     else await dispatch(createInterview(form))
-    dispatch(fetchInterviews({ page:1, size:5, candidateCreatedBy:user.id }))
+    dispatch(fetchInterviews({ page:1, size:5, candidateCreatedBy:user.id, isAdmin: user?.role === "ADMIN" ? true : false }))
     setCurrentPage(1)    
     setPageSize(5)
   }
   const handleSearchChange = (value) => {
-    dispatch(fetchInterviews({ page: 1 , size: 5, search:value, candidateCreatedBy:user.id }))
+    dispatch(fetchInterviews({ page: 1 , size: 5, search:value, candidateCreatedBy:user.id, isAdmin: user?.role === "ADMIN" ? true : false }))
     setCurrentPage(1)    
     setPageSize(5)
   } 
@@ -147,7 +147,7 @@ const Interviews = () => {
      }
     setDeleteId(null)
   
-    dispatch(fetchInterviews({ page:1, size:5, candidateCreatedBy:user.id }))
+    dispatch(fetchInterviews({ page:1, size:5, candidateCreatedBy:user.id, isAdmin: user?.role === "ADMIN" ? true : false }))
     setCurrentPage(1)
     setPageSize(5)
   }
@@ -241,7 +241,7 @@ const Interviews = () => {
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>Cancel Interview?</h3>
             <p style={{ color: 'var(--text-secondary)', marginBottom: 24, fontSize: 14 }}>This will permanently remove the interview record.</p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <button className="btn btn-danger" onClick={() => { dispatch(deleteInterview(deleteId)); setDeleteId(null); dispatch(fetchInterviews({ page:1, size:5, candidateCreatedBy:user.id })); setCurrentPage(1); setPageSize(5) }}>Delete</button>
+              <button className="btn btn-danger" onClick={() => { dispatch(deleteInterview(deleteId)); setDeleteId(null); dispatch(fetchInterviews({ page:1, size:5, candidateCreatedBy:user.id, isAdmin: user?.role === "ADMIN" ? true : false })); setCurrentPage(1); setPageSize(5) }}>Delete</button>
               <button className="btn btn-secondary" onClick={() => setDeleteId(null)}>Cancel</button>
             </div>
           </div>
