@@ -23,8 +23,8 @@ const App = () => {
       <Routes>
         {/* Public */}
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login"    element={isAuthenticated ? <Navigate to={user.role === 'ADMIN' ? '/users' : '/dashboard'} replace /> : <Login />} />
-        <Route path="/register" element={isAuthenticated ? <Navigate to={user.role === 'ADMIN' ? '/users' : '/dashboard'} replace /> : <Register />} />
+        <Route path="/login"    element={isAuthenticated ? <Navigate to={user?.role === 'ADMIN' ? '/users' : '/dashboard'} replace /> : <Login />} />
+        <Route path="/register" element={isAuthenticated ? <Navigate to={user?.role === 'ADMIN' ? '/users' : '/dashboard'} replace /> : <Register />} />
 
         {/* All authenticated users */}
         <Route path="/dashboard" element={
