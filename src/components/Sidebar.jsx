@@ -11,6 +11,7 @@ const NAV = [
   { to: '/browse-jobs',     icon: '🔍', label: 'Browse Jobs',       roles: ['CANDIDATE'] },
   { to: '/my-applications', icon: '📋', label: 'My Applications',   roles: ['CANDIDATE'] },
   { to: '/my-interviews',   icon: '📅', label: 'My Interviews',     roles: ['CANDIDATE'] },
+  { to: '/ai-interviews',   icon: '🤖', label: 'Ai Interview',     roles: ['CANDIDATE'] },
 ]
 
 const ROLE_STYLE = {

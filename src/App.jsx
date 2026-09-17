@@ -14,6 +14,7 @@ import Interviews from './pages/interviews/Interviews'
 import Users from './pages/users/Users'
 import MyApplications from './pages/candidates/MyApplications'
 import MyInterviews from './pages/interviews/MyInterviews'
+import AiInterview from './pages/interviews/AiInterview'
 
 const App = () => {
   const { isAuthenticated, user } = useSelector(s => s.auth)
@@ -26,7 +27,7 @@ const App = () => {
         <Route path="/login"    element={isAuthenticated ? <Navigate to={user?.role === 'ADMIN' ? '/users' : '/dashboard'} replace /> : <Login />} />
         <Route path="/register" element={isAuthenticated ? <Navigate to={user?.role === 'ADMIN' ? '/users' : '/dashboard'} replace /> : <Register />} />
 
-        {/* All authenticated users */}
+       
         <Route path="/dashboard" element={
           <ProtectedRoute allowedRoles={['CANDIDATE','RECURITER']}>
             <AppLayout><Dashboard /></AppLayout>
@@ -47,6 +48,11 @@ const App = () => {
         <Route path="/my-interviews" element={
           <ProtectedRoute allowedRoles={['CANDIDATE']}>
             <AppLayout><MyInterviews /></AppLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/ai-interviews" element={
+          <ProtectedRoute allowedRoles={['CANDIDATE']}>
+            <AppLayout><AiInterview /></AppLayout>
           </ProtectedRoute>
         } />
 

@@ -12,6 +12,7 @@ const PAGE_META = {
   '/users':           { title: 'Users',            emoji: '👥' },
   '/my-applications': { title: 'My Applications',  emoji: '📋' },
   '/my-interviews':   { title: 'My Interviews',    emoji: '📅' },
+  '/ai-interviews':   { title: 'Mock Ai Interview',    emoji: '🤖' },
 }
 
 

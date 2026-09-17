@@ -7,7 +7,7 @@ const PERSIST_KEY = 'persist:recruitEdge-root'
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
-  timeout: 10000,
+  timeout: 100000,
 })
 
 // ---------------------------------------------------------------
