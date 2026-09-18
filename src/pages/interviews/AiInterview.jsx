@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { fetchQuestions, submitAnswers } from './interviewApi' // adjust path if moved
-import './MockInterview.css'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchAiQuestions, submitAiAnswers, resetAiInterview } from '../../store/slices/aiinterviewSlice'
 
 const ROLES = [
   'Frontend Developer',
@@ -29,13 +29,19 @@ const SpeechRecognitionImpl =
     : null
 
 export default function AiInterview() {
+  const dispatch = useDispatch()
+  const {
+    questions,
+    loadingQuestions,
+    loadError,
+    result,
+    submittingAnswers,
+    submitError,
+  } = useSelector((s) => s.aiinterview)
+
   const [stage, setStage] = useState('setup') // 'setup' | 'session' | 'scoring' | 'result'
   const [role, setRole] = useState(ROLES[0])
   const [experience, setExperience] = useState(EXPERIENCE_LEVELS[0].value)
-
-  const [questions, setQuestions] = useState([])
-  const [loadingQuestions, setLoadingQuestions] = useState(false)
-  const [loadError, setLoadError] = useState(null)
 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [answers, setAnswers] = useState([]) // [{ questionId, question, answer }]
@@ -43,9 +49,6 @@ export default function AiInterview() {
   const [secondsLeft, setSecondsLeft] = useState(SECONDS_PER_QUESTION)
   const [isListening, setIsListening] = useState(false)
   const [micError, setMicError] = useState(null)
-
-  const [result, setResult] = useState(null)
-  const [submitError, setSubmitError] = useState(null)
 
   const recognitionRef = useRef(null)
   const timerRef = useRef(null)
@@ -59,20 +62,13 @@ export default function AiInterview() {
   // ---------------- Setup ----------------
 
   const handleStart = async () => {
-    setLoadingQuestions(true)
-    setLoadError(null)
-    try {
-      const qs = await fetchQuestions(role, experience)
-      setQuestions(qs)
+    const action = await dispatch(fetchAiQuestions({ role, experience }))
+    if (fetchAiQuestions.fulfilled.match(action)) {
       setAnswers([])
       setCurrentIndex(0)
       setDraftAnswer('')
       processedIndexRef.current = -1
       setStage('session')
-    } catch (err) {
-      setLoadError('Could not load questions. Please try again.')
-    } finally {
-      setLoadingQuestions(false)
     }
   }
 
@@ -95,6 +91,7 @@ export default function AiInterview() {
   // ---------------- Per-question timer ----------------
 
   const goToNext = useCallback(() => {
+    window.speechSynthesis?.cancel()
     if (processedIndexRef.current === currentIndex) return
     processedIndexRef.current = currentIndex
 
@@ -151,14 +148,9 @@ export default function AiInterview() {
 
     let cancelled = false
     ;(async () => {
-      try {
-        const res = await submitAnswers(role, experience, answers)
-        if (!cancelled) {
-          setResult(res)
-          setStage('result')
-        }
-      } catch (err) {
-        if (!cancelled) setSubmitError('Could not score your interview. Please try again.')
+      const action = await dispatch(submitAiAnswers({ role, experience, answers }))
+      if (!cancelled && submitAiAnswers.fulfilled.match(action)) {
+        setStage('result')
       }
     })()
 
@@ -172,6 +164,9 @@ export default function AiInterview() {
 
   const startListening = () => {
     if (!SpeechRecognitionImpl) return
+
+    // Stop question text-to-speech immediately if speaking
+    window.speechSynthesis?.cancel()
 
     setMicError(null)
     const recognition = new SpeechRecognitionImpl()
@@ -223,11 +218,11 @@ export default function AiInterview() {
   // ---------------- Restart ----------------
 
   const handleRestart = () => {
+    window.speechSynthesis?.cancel()
+    stopListening()
+    dispatch(resetAiInterview())
     setStage('setup')
-    setQuestions([])
     setAnswers([])
-    setResult(null)
-    setSubmitError(null)
     setCurrentIndex(0)
     setDraftAnswer('')
     setMicError(null)
@@ -352,8 +347,8 @@ export default function AiInterview() {
     return (
       <div className="iv-page">
         <div className="glass-card iv-card iv-scoring">
-          <span className="spinner" />
-          <p>Scoring your answers…</p>
+          {submittingAnswers && <span className="spinner" />}
+          <p>{submittingAnswers ? 'Scoring your answers…' : submitError ? 'Scoring could not be completed' : 'Scoring complete'}</p>
           {submitError && (
             <>
               <div className="alert alert-error">{submitError}</div>

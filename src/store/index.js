@@ -8,6 +8,7 @@ import candidateReducer from './slices/candidateSlice'
 import interviewReducer from './slices/interviewSlice'
 import userReducer from './slices/userSlice'
 import themeReducer from './slices/themeSlice'
+import aiinterviewReducer from './slices/aiinterviewSlice'
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   interviews: interviewReducer,
   users: userReducer,
   theme: themeReducer,
+  aiinterview: aiinterviewReducer,
 })
 
 const persistConfig = {

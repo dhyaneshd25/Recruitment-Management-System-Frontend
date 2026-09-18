@@ -1,7 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { toggleTheme } from '../store/slices/themeSlice'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import { logout } from '../store/slices/authSlice'
 
 const PAGE_META = {
   '/dashboard':       { title: 'Dashboard',       emoji: '▦' },
@@ -30,6 +31,7 @@ const Navbar = ({ onMenuToggle }) => {
   const dispatch = useDispatch()
   const { pathname } = useLocation()
   const navigate = useNavigate()
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
   const meta = PAGE_META[pathname] || { title: 'recruitEdge', emoji: '✦' }
   const isLight = mode === 'light'
   const rs = ROLE_STYLE[user?.role] || ROLE_STYLE.CANDIDATE
@@ -94,7 +96,20 @@ const Navbar = ({ onMenuToggle }) => {
         <div style={{ width: 1, height: 22, background: 'var(--border-subtle)', flexShrink: 0 }} />
 
         {/* User chip */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 10px', borderRadius: 10, background: 'rgba(99,102,241,0.06)', cursor:'pointer', border: '1px solid var(--border-subtle)' }}>
+        <div
+          onClick={() => setShowLogoutModal(true)}
+          title="Click to sign out"
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '5px 10px', borderRadius: 10,
+            background: 'rgba(99,102,241,0.06)',
+            cursor: 'pointer',
+            border: '1px solid var(--border-subtle)',
+            transition: 'all 0.15s ease',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(99,102,241,0.14)' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(99,102,241,0.06)' }}
+        >
           <div style={{
             width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
             background: 'linear-gradient(135deg,#6366f1,#8b5cf6)',
@@ -108,16 +123,53 @@ const Navbar = ({ onMenuToggle }) => {
         </div>
       </div>
 
-        {/* <div className="modal-overlay">
-          <div className="modal-box" onClick={e => e.stopPropagation()} style={{position:'absolute', top:'39px', right:"10px" , maxWidth:200, maxHeight:200, textAlign:'center'}}>
-            <h3 style={{ fontFamily:'var(--font-display)', fontSize:17, fontWeight:700, color:'var(--text-primary)', marginBottom:8 }}>Delete Job?</h3>
-            <p style={{ color:'var(--text-secondary)', marginBottom:22, fontSize:13 }}>This action cannot be undone.</p>
-            <div style={{ display:'flex', gap:10, justifyContent:'center', margin:'3px' }}>
-              <button className="btn btn-danger">Sign out</button>
-              <button className="btn btn-secondary">Cancel</button>
+      {/* Logout confirmation modal */}
+      {showLogoutModal && (
+        <div className="modal-overlay" onClick={() => setShowLogoutModal(false)}>
+          <div
+            className="modal-box"
+            onClick={e => e.stopPropagation()}
+            style={{ maxWidth: 360, textAlign: 'center', padding: '26px 22px' }}
+          >
+            <div style={{
+              width: 48, height: 48, borderRadius: '50%',
+              background: 'rgba(244,63,94,0.12)', border: '1px solid rgba(244,63,94,0.25)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 22, margin: '0 auto 12px',
+            }}>
+              🚪
+            </div>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>
+              Sign Out?
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: 22, fontSize: 13, lineHeight: 1.5 }}>
+              Are you sure you want to sign out of <strong>{user?.name || 'your account'}</strong>?
+            </p>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setShowLogoutModal(false)}
+                style={{ flex: 1, justifyContent: 'center' }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={() => {
+                  setShowLogoutModal(false)
+                  dispatch(logout())
+                  navigate('/login')
+                }}
+                style={{ flex: 1, justifyContent: 'center' }}
+              >
+                Sign Out
+              </button>
             </div>
           </div>
-        </div> */}
+        </div>
+      )}
 
       <style>{`
         @media (max-width:640px) { .hide-sm { display:none!important; } }
